@@ -72,3 +72,17 @@ model VerificationToken {
 
     @@unique([identifier, token])
 }
+
+model Reservation {
+  id          String   @id @default(uuid()) // 主キーの指定（UUID）
+  todoID      String                        // 日付 (yyyy/mm/d)
+  todoContent String                        // 予約内容
+  edit        Boolean  @default(false)
+  pw          String                        // 編集可否パスワード
+  person      String                        // 予約者名
+  rooms       String                        // 予約会議室名
+  startTime   String                        // 開始時間 (hh:mm)
+  finishTime  String                        // 終了時間 (hh:mm)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
