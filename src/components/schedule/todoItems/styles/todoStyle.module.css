@@ -1,0 +1,402 @@
+@charset "utf-8";
+
+.todoForm,
+.todoLists .formBtns {
+    font-size: 1.4rem;
+    line-height: 1.8;
+}
+
+.todoForm {
+    position: relative;
+}
+
+.formBtns {
+    & span {
+        display: block;
+        width: 100%;
+        position: absolute;
+        transform: translate(-50%, -50%);
+        top: 100%;
+        left: 50%;
+        padding: 1em;
+        background-color: #cc3226;
+        color: #fff;
+        border-radius: 4px;
+    }
+}
+
+& .todoView {
+    & .today {
+        font-size: 2.4rem;
+        padding-bottom: 1.5em;
+    }
+
+    & button {
+
+        &.openBtn,
+        &.closeBtn {
+            appearance: none;
+            background-color: transparent;
+            border: 1px solid transparent;
+            cursor: pointer;
+            padding: 0;
+            aspect-ratio: 1 / 1;
+            border-radius: 50%;
+            width: 4.4rem;
+            height: 4.4rem;
+            display: grid;
+            place-content: center;
+            margin: auto;
+
+            & span {
+                padding: 0;
+                color: #767676;
+            }
+        }
+
+        & span {
+            vertical-align: middle;
+        }
+
+        &.openBtn {
+            box-shadow: 0 0 8px rgba(0, 0, 0, .25) inset;
+            background-color: #fff;
+            width: 2rem;
+            height: 2rem;
+        }
+
+        &.closeBtn {
+            font-weight: bold;
+            background-color: #333;
+            border-radius: 50%;
+            margin: 0 auto 2.5em;
+            padding: .5em 1em;
+
+            & span {
+                filter: brightness(3);
+            }
+        }
+    }
+
+    & .todoCtrlElm {
+        opacity: 0;
+        visibility: hidden;
+        width: 100vw;
+        height: 100%;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        padding: 2.5em 1em 1em;
+        transform: translate(-50%, -50%);
+        background-color: rgba(255, 255, 255, .5);
+        -webkit-backdrop-filter: blur(8px);
+        backdrop-filter: blur(8px);
+        transition: all .25s;
+    }
+
+    &.todoView.OnView {
+        & .todoCtrlElm {
+            opacity: 1;
+            visibility: visible;
+            overflow-y: auto;
+        }
+    }
+}
+
+.formBtns {
+    letter-spacing: 0.25em;
+
+    &.editBtn {
+        background-color: #59b835;
+    }
+
+    &#deleteBtn {
+        background-color: #cc3226;
+    }
+
+    &#closeBtn {
+        background-color: #f0b20e;
+        color: #333;
+        margin-top: 1em;
+    }
+
+    &#regiUpdateBtn {
+        width: 100%;
+    }
+}
+
+.todoForm {
+    width: 56%;
+    margin: 0 auto 1em;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+
+    & select {
+        margin: -1em 0 1em;
+        width: 100%;
+    }
+
+    & label {
+        display: block;
+        margin-bottom: 1em;
+
+        & span {
+            border-left: 4px solid #333;
+            padding-left: .25em;
+        }
+
+        & input {
+            display: block;
+            width: 100%;
+            font-size: 16px;
+            line-height: 2;
+            padding-left: .25em;
+        }
+
+        &.timeLabel {
+            font-size: clamp(10px, 100%, 14px);
+            display: block;
+            margin: 1em 0;
+
+            & input[type="time"] {
+                appearance: none;
+                width: 100%;
+                height: 2.5em;
+                background: transparent;
+                border: 1px solid #767676;
+                border-radius: 2px;
+            }
+
+            & input[type="time"]::-webkit-date-and-time-value {
+                text-align: left;
+            }
+        }
+    }
+}
+
+ul.todoLists {
+    margin-top: 1em;
+    list-style: none;
+    padding: 0;
+    max-height: 16rem;
+    overflow-y: auto;
+
+    & li.todoList {
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: center;
+        gap: .5em;
+        background-color: #fafafa;
+        padding: .25em;
+        box-shadow: 0 0 8px rgba(0, 0, 0, .25) inset;
+        border-radius: 4px;
+        min-height: unset;
+
+        &:hover {
+            cursor: pointer;
+
+            & p {
+                &.editTargetStr {
+                    color: #59b835;
+                }
+            }
+        }
+
+        & p {
+            font-feature-settings: 'palt';
+            margin: 0;
+        }
+
+        & .editFalseMode {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 1em;
+
+            & .editBtn {
+                width: clamp(80px, calc(100vw/2), 160px);
+                margin: auto;
+            }
+        }
+
+        & div.editTargetContent {
+            & span {
+                font-size: clamp(10px, calc(100vw/150), 12px);
+                display: block;
+            }
+        }
+
+        &:not(:last-of-type) {
+            margin-bottom: 1em;
+        }
+
+        & .modalWindow {
+            position: fixed;
+            width: 100vw;
+            height: 100%;
+            padding: 2.5em 1em 1em;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(255, 255, 255, .5);
+            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity .25s, visibility .25s;
+            overflow-y: auto;
+            overscroll-behavior: contain;
+
+            & .modalWindowChild {
+                display: flex;
+                flex-flow: row wrap;
+                justify-content: center;
+                gap: 1em;
+                max-width: 560px;
+                margin: auto;
+                background-color: #fff;
+                box-shadow: 0 0 4px rgba(0, 0, 0, .5) inset;
+                border-radius: 4px;
+                padding: 1em;
+
+                & div.editTargetContent {
+                    text-align: left;
+                }
+
+                & .editerIntoCtrlBtns {
+                    display: flex;
+                    gap: 1em;
+                    width: clamp(280px, calc(100vw/2), 320px);
+                    margin: 2.5em 0 1em;
+
+                    & button {
+                        width: 50%;
+                    }
+                }
+            }
+
+            & .modalWindowChild_editabel {
+                & div.editTargetContent {
+                    margin-bottom: 4em;
+                }
+            }
+        }
+
+        & .modalWindowOnView {
+            cursor: default;
+            opacity: 1;
+            visibility: visible;
+        }
+
+        & .isMobileNotice {
+            font-size: clamp(8px, calc(100vw/32), 10px);
+            font-feature-settings: "palt";
+        }
+
+        & .pwLabel {
+            text-align: left;
+            font-weight: bold;
+            width: fit-content;
+            margin: 1em 0;
+            border-left: 4px solid #333;
+            padding-left: 1em;
+
+            & input[type="text"] {
+                display: block;
+                padding-left: .25em;
+                font-size: 16px;
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 720px) {
+    .todoForm {
+        & .timeSchedule {
+            display: flex;
+            justify-content: flex-start;
+            gap: 1em;
+
+            & label {
+                width: 100%;
+                text-align: left;
+
+                & input {
+                    width: 70%;
+                }
+            }
+        }
+    }
+
+    ul.todoLists {
+        max-height: 160px;
+
+        & li {
+            & .modalWindow {
+                & .modalWindowChild {
+                    min-width: 400px;
+                    gap: 2em;
+
+                    & .editerIntoCtrlBtns {
+                        width: 100%;
+                    }
+                }
+
+                & .modalWindowChild_editabel {
+                    & div.editTargetContent {
+                        width: 40%;
+                        margin-bottom: 0em;
+                        border-right: 1px solid #dadada;
+                        padding-right: 2.5em;
+                        text-align: left;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 1080px) {
+
+    .todoForm,
+    .todoLists .formBtns {
+        font-size: 14px;
+    }
+
+    .todoLists .formBtns {
+        line-height: 44px;
+    }
+
+    & .todoView {
+        & .today {
+            font-size: 24px;
+        }
+
+        & button {
+            &.openBtn {
+                width: 22px;
+                height: 22px;
+            }
+
+            &.closeBtn {
+                width: 44px;
+                height: 44px;
+            }
+        }
+
+        & .todoCtrlElm {
+            padding: 5em calc(100vw/4);
+        }
+    }
+
+    ul.todoLists {
+        & li {
+            & .modalWindow {
+                & .modalWindowChild_editabel {
+                    min-width: 800px;
+                }
+            }
+        }
+    }
+}
