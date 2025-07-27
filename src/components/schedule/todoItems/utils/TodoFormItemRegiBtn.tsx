@@ -1,6 +1,7 @@
 import todoStyle from "../styles/todoStyle.module.css";
-import { memo, RefObject, SyntheticEvent, useMemo } from "react";
-import { todoItemType } from "../ts/todoItemType";
+import type { RefObject, SyntheticEvent } from "react";
+import { memo, useMemo } from "react";
+import type { todoItemType } from "../ts/todoItemType";
 import { useCloseModalWindow } from "../hooks/useCloseModalWindow";
 import { useRegiTodoItem } from "../hooks/useRegiTodoItem";
 import { useUpdateTodoItem } from "../hooks/useUpdateTodoItem";

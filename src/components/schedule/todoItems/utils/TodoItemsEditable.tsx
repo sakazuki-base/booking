@@ -1,6 +1,7 @@
-import { memo, SyntheticEvent } from "react";
+import type { SyntheticEvent } from "react";
+import { memo } from "react";
 import todoStyle from "../styles/todoStyle.module.css";
-import { todoItemType } from "../ts/todoItemType";
+import type { todoItemType } from "../ts/todoItemType";
 import TodoForm from "../TodoForm";
 import { useDeleteTodoItem } from "../hooks/useDeleteTodoItem";
 import { useCreateTimeSpace } from "@/hooks/useCreateTimeSpace";

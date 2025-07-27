@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { memo } from "react";
-import baseStyle from "../../styles/page.module.css";
 
 function Header() {
     return (
-        <header className={baseStyle.theHeader}>
+        // <header className={baseStyle.theHeader}>
+        <header>
             <nav>
                 <ul>
                     <li><Link href={'/'}>TOP</Link></li>

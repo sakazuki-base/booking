@@ -1,6 +1,7 @@
 import todoStyle from "./styles/todoStyle.module.css";
-import { Fragment, memo, SyntheticEvent, useMemo } from "react";
-import { todoItemType } from "./ts/todoItemType";
+import { Fragment, memo, useMemo } from "react";
+import type { SyntheticEvent } from "react";
+import type { todoItemType } from "./ts/todoItemType";
 import { useAtom } from "jotai";
 import { isDesktopViewAtom, todoMemoAtom } from "@/types/calendar-atom";
 import TodoItems from "./TodoItems";

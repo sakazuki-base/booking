@@ -1,6 +1,7 @@
 import todoStyle from "../styles/todoStyle.module.css";
-import { ChangeEvent, Dispatch, memo, RefObject, SetStateAction } from "react";
-import { todoItemType } from "../ts/todoItemType";
+import type { ChangeEvent, Dispatch, RefObject, SetStateAction } from "react";
+import { memo } from "react";
+import type { todoItemType } from "../ts/todoItemType";
 import { useCheckTimeValidation } from "../hooks/useCheckTimeValidation";
 import { useHandleFormEntries } from "@/hooks/useHandleFormEntries";
 

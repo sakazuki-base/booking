@@ -1,5 +1,6 @@
-import { ChangeEvent, Dispatch, memo, SetStateAction } from "react";
-import { todoItemType } from "../ts/todoItemType";
+import type { ChangeEvent, Dispatch, SetStateAction } from "react";
+import { memo } from "react";
+import type { todoItemType } from "../ts/todoItemType";
 import { useHandleFormEntries } from "@/hooks/useHandleFormEntries";
 
 function TodoFormItemPassword({ todoItems, setTodoItems }: {

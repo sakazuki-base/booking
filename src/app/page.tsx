@@ -4,7 +4,7 @@ import Calendar from "../components/schedule/calendar/Calendar";
 export default async function Home() {
   return (
     <main>
-      <Rooms />
+      {/* <Rooms /> */}
       <Calendar />
     </main>
   );

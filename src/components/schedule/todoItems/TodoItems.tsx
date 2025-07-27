@@ -1,6 +1,7 @@
-import { memo, SyntheticEvent } from "react";
+import { memo } from "react";
+import type { SyntheticEvent } from "react";
 import todoStyle from "./styles/todoStyle.module.css";
-import { todoItemType } from "./ts/todoItemType";
+import type { todoItemType } from "./ts/todoItemType";
 import { useAtom } from "jotai";
 import { todoMemoAtom } from "@/types/calendar-atom";
 import TodoItemsEditable from "./utils/TodoItemsEditable";

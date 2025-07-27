@@ -1,8 +1,9 @@
-import { ChangeEvent, memo, useRef, useState } from "react";
+import { memo, useRef, useState } from "react";
+import type { ChangeEvent } from "react";
 import todoStyle from "./styles/todoStyle.module.css";
 import { useAtom } from "jotai";
 import { roomsAtom } from "@/types/rooms-atom";
-import { todoItemType } from "./ts/todoItemType";
+import type { todoItemType } from "./ts/todoItemType";
 import TodoFormItemContent from "./utils/TodoFormItemContent";
 import TodoFormItemPerson from "./utils/TodoFormItemPerson";
 import TodoFormItemRoom from "./utils/TodoFormItemRoom";
@@ -34,7 +35,7 @@ function TodoForm({ props }: { props: TodoFormType }) {
         edit: todoItem ? todoItem.edit : false,
         pw: '',
         person: todoItem ? todoItem.person : '',
-        rooms: roomRef.current !== null ? roomRef.current.value : rooms[0].room,
+        rooms: roomRef.current !== null ? roomRef.current.value : rooms[0]!.room,
         startTime: '',
         finishTime: ''
     }

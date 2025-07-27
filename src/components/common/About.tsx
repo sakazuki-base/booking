@@ -1,10 +1,11 @@
 import { memo } from "react";
-import baseStyle from "../../styles/page.module.css";
+//import baseStyle from "../../styles/page.module.css";
 import { timeBlockBegin, timeBlockEnd } from "@/types/rooms-atom";
 
 function About() {
     return (
-        <div className={baseStyle.theAboutWrapper}>
+        // <div className={baseStyle.theAboutWrapper}>
+        <div>
             <h2>Reservation Rooms 使い方の説明</h2>
             <ol>
                 <li>スケジュール欄の日付にあるアイコンをクリック</li>
@@ -12,7 +13,8 @@ function About() {
                 <li>登録後、スケジュールと上部のタイムテーブルに反映されているかを確認</li>
                 <li>必要に応じて登録時のパスワードを使って予約内容を更新</li>
             </ol>
-            <div className={baseStyle.about_subInfo}>
+            {/* <div className={baseStyle.about_subInfo}> */}
+            <div>
                 <h3>注意事項</h3>
                 <dl>
                     <div>

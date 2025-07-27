@@ -1,7 +1,8 @@
 import Image from "next/image";
-import { SyntheticEvent, memo } from "react";
+import type { SyntheticEvent } from "react";
+import { memo } from "react";
 import todoStyle from "./styles/todoStyle.module.css";
-import { calendarItemType } from "../calendar/ts/calendarItemType";
+import type { calendarItemType } from "../calendar/ts/calendarItemType";
 import { useScrollTop } from "@/hooks/useScrollTop";
 import { useViewTodoCtrl } from "./hooks/useViewTodoCtrl";
 import { useRestrictReservationTerm } from "./hooks/useRestrictReservationTerm";

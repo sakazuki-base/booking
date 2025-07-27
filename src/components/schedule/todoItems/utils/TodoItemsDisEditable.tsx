@@ -1,6 +1,7 @@
-import { ChangeEvent, memo, useState } from "react";
+import type { ChangeEvent } from "react";
+import { memo, useState } from "react";
 import todoStyle from "../styles/todoStyle.module.css";
-import { todoItemType } from "../ts/todoItemType";
+import type { todoItemType } from "../ts/todoItemType";
 import { useHandleInputValueSanitize } from "@/hooks/useHandleInputValueSanitize";
 import { useCreateTimeSpace } from "@/hooks/useCreateTimeSpace";
 
