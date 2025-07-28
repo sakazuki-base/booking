@@ -1,194 +1,196 @@
 .roomWrapper {
-    position: relative;
+  position: relative;
 }
 
 .roomInfoToolTip {
-    pointer-events: none;
-    position: absolute;
-    margin: auto;
-    inset: 1;
-    background-color: #333;
-    color: #fff;
-    border-radius: 4px;
-    overflow-wrap: anywhere;
-    line-height: 1.5;
-    z-index: 1;
-    max-width: 160px;
-    font-size: 12px;
+  pointer-events: none;
+  position: absolute;
+  margin: auto;
+  inset: 1;
+  background-color: #333;
+  color: #fff;
+  border-radius: 4px;
+  overflow-wrap: anywhere;
+  line-height: 1.5;
+  z-index: 1;
+  max-width: 160px;
+  font-size: 12px;
 
-    &.onView {
-        padding: .5em 1em;
-    }
+  &.onView {
+    padding: 0.5em 1em;
+  }
 }
 
 .roomContainer {
-    margin-bottom: 1em;
-    padding: 1em;
-    background-color: #f5f5f5;
+  margin-bottom: 1em;
+  padding: 1em;
+  background-color: #f5f5f5;
 }
 
 .roomContainer ul {
-    list-style: none;
+  list-style: none;
+  display: flex;
+
+  & li {
+    border: 1px solid #dadada;
     display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    flex-flow: row wrap;
+    width: 100%;
 
-    & li {
-        border: 1px solid #dadada;
-        display: flex;
-        align-items: flex-start;
-        justify-content: flex-start;
-        flex-flow: row wrap;
-        width: 100%;
-
-        & span {
-            display: block;
-            width: 100%;
-            line-height: 1.5;
-            border-bottom: 1px solid #dadada;
-            padding-left: .5em;
-        }
-
-        & .minBlocks {
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-
-            & div {
-                width: 1px;
-
-                &[data-reserved=true] {
-                    background-color: #b6f7ba;
-                }
-
-                &[data-last15=true] {
-                    background-color: #dadada;
-                }
-
-                &:nth-of-type(15n+15) {
-                    border-left: 1px dotted #333;
-                }
-            }
-        }
+    & span {
+      display: block;
+      width: 100%;
+      line-height: 1.5;
+      border-bottom: 1px solid #dadada;
+      padding-left: 0.5em;
     }
+
+    & .minBlocks {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+
+      & div {
+        width: 1px;
+
+        &[data-reserved="true"] {
+          background-color: #b6f7ba;
+        }
+
+        &[data-last15="true"] {
+          background-color: #dadada;
+        }
+
+        &:nth-of-type(15n + 15) {
+          border-left: 1px dotted #333;
+        }
+      }
+    }
+  }
 }
 
 .roomContainer p {
-    font-weight: bold;
-    font-size: 1.4rem;
-    border-left: 4px solid #333;
-    padding-left: .25em;
-    margin-bottom: .25em;
+  font-weight: bold;
+  font-size: 1.4rem;
+  border-left: 4px solid #333;
+  padding-left: 0.25em;
+  margin-bottom: 0.25em;
 }
 
 .timeScheduleWrapper {
-    overflow-x: scroll;
-    position: relative;
+  overflow-x: scroll;
+  position: relative;
 }
 
 .timeScheduleWrapper ul {
-    width: calc(100vw * 1.6);
+  width: calc(100vw * 1.6);
 }
 
 .aboutContainer {
-    width: fit-content;
-    cursor: pointer;
-    margin-bottom: 2em;
+  width: fit-content;
+  cursor: pointer;
+  margin-bottom: 2em;
 
-    &>h2 {
-        color: #1a0dab;
-        text-decoration: underline;
+  & > h2 {
+    color: #1a0dab;
+    text-decoration: underline;
 
-        &:hover {
-            text-decoration: none;
-        }
+    &:hover {
+      text-decoration: none;
     }
+  }
+
+  & section {
+    padding: calc(100vh / 5) 2.5em;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    max-width: 960px;
+    height: 100vh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background-color: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.25) inset;
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity 0.5s,
+      visibility 0.5s;
+    z-index: 9;
+
+    & > div {
+      transform: translateY(10%);
+      transition: transform 1s;
+      transition-delay: transform 1s;
+    }
+  }
+
+  &.onView {
+    cursor: default;
 
     & section {
-        padding: calc(100vh/5) 2.5em;
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 100%;
-        max-width: 960px;
-        height: 100vh;
-        overflow-y: auto;
-        overscroll-behavior: contain;
-        background-color: rgba(255, 255, 255, .75);
-        backdrop-filter: blur(8px);
-        box-shadow: 0 0 8px rgba(0, 0, 0, .25) inset;
-        opacity: 0;
-        visibility: hidden;
-        transition: opacity .5s, visibility .5s;
-        z-index: 9;
+      opacity: 1;
+      visibility: visible;
 
-        &>div {
-            transform: translateY(10%);
-            transition: transform 1s;
-            transition-delay: transform 1s;
-        }
+      & > div {
+        transform: translateY(0);
+      }
     }
-
-    &.onView {
-        cursor: default;
-
-        & section {
-            opacity: 1;
-            visibility: visible;
-
-            &>div {
-                transform: translateY(0);
-            }
-        }
-    }
+  }
 }
 
 .multiTimeTableCtrlBtns {
-    display: flex;
-    justify-content: space-between;
-    gap: 1em;
-    margin: 1em 0 .5em;
-    font-size: 1.4rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 1em;
+  margin: 1em 0 0.5em;
+  font-size: 1.4rem;
 
-    & button {
-        padding: .25em 1em;
-        background-color: #333;
-        color: white;
-        border: 1px solid transparent;
-        border-radius: 4px;
-        cursor: pointer;
+  & button {
+    padding: 0.25em 1em;
+    background-color: #333;
+    color: white;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    cursor: pointer;
 
-        &:hover {
-            opacity: .75;
-        }
+    &:hover {
+      opacity: 0.75;
     }
+  }
 }
 
 /* minBlocks div の間隔調整のために 560px で指定 */
 @media screen and (min-width: 560px) {
-    .timeScheduleWrapper {
-        & ul {
-            width: 100%;
+  .timeScheduleWrapper {
+    & ul {
+      width: 100%;
 
-            & li {
-                height: 50px;
+      & li {
+        height: 50px;
 
-                & .minBlocks {
-                    & div {
-                        width: 1.25px;
-                    }
-                }
-            }
+        & .minBlocks {
+          & div {
+            width: 1.25px;
+          }
         }
+      }
     }
+  }
 
-    .multiTimeTableCtrlBtns,
-    .roomContainer p {
-        font-size: 14px;
-    }
+  .multiTimeTableCtrlBtns,
+  .roomContainer p {
+    font-size: 14px;
+  }
 }
 
 @media screen and (min-width: 1080px) {
-    .timeScheduleWrapper {
-        overflow-x: unset;
-    }
+  .timeScheduleWrapper {
+    overflow-x: unset;
+  }
 }

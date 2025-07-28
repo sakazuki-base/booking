@@ -1,10 +1,14 @@
 import todoStyle from "../styles/todoStyle.module.css";
 
 export const useCloseModalWindow = () => {
-    const closeModalWindow: () => void = () => {
-        const modalWindowEls: NodeListOf<HTMLElement> = document.querySelectorAll(`.${todoStyle.modalWindow}`);
-        modalWindowEls.forEach(modalWindowElm => modalWindowElm.classList.remove(todoStyle.modalWindowOnView));
-    }
+  const closeModalWindow: () => void = () => {
+    const modalWindowEls: NodeListOf<HTMLElement> = document.querySelectorAll(
+      `.${todoStyle.modalWindow}`,
+    );
+    modalWindowEls.forEach((modalWindowElm) =>
+      modalWindowElm.classList.remove(todoStyle.modalWindowOnView),
+    );
+  };
 
-    return { closeModalWindow }
-}
+  return { closeModalWindow };
+};

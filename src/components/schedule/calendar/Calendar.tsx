@@ -12,95 +12,84 @@ import { useRemovePastSchedule } from "./hooks/useRemovePastSchedule";
 import TimeSelector from "./components/TimeSelector";
 
 function Calendar() {
-    const [, setDesktopView] = useAtom(isDesktopViewAtom);
-    const [fetchTodoMemo] = useAtom(fetchTodoMemoAtom);
-    const currYear = new Date().getFullYear();
-    const currMonth = new Date().getMonth() + 1;
-    const [ctrlYear, setCtrlYear] = useState<number>(currYear);
-    const [ctrlMonth, setCtrlMonth] = useState<number>(currMonth);
-    const [days, setDays] = useState<calendarItemType[]>([]);
-    const [selectedDate, setSelectedDate] = useState<string | null>(null);
-    const [selectedTime, setSelectedTime] = useState<number | null>(null);
-    const { getMonthDays } = useGetMonthDays();
-    const { removePastSchedule } = useRemovePastSchedule();
+  const [, setDesktopView] = useAtom(isDesktopViewAtom);
+  const [fetchTodoMemo] = useAtom(fetchTodoMemoAtom);
+  const currYear = new Date().getFullYear();
+  const currMonth = new Date().getMonth() + 1;
+  const [ctrlYear, setCtrlYear] = useState<number>(currYear);
+  const [ctrlMonth, setCtrlMonth] = useState<number>(currMonth);
+  const [days, setDays] = useState<calendarItemType[]>([]);
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [selectedTime, setSelectedTime] = useState<number | null>(null);
+  const { getMonthDays } = useGetMonthDays();
+  const { removePastSchedule } = useRemovePastSchedule();
 
-    const handleCheckIsDesktopView = () => {
-        if (isMounted && window.matchMedia("(min-width: 1025px)").matches) {
-            setDesktopView(true);
-        }
-    };
+  const handleCheckIsDesktopView = () => {
+    if (isMounted && window.matchMedia("(min-width: 1025px)").matches) {
+      setDesktopView(true);
+    }
+  };
 
-    const jumpThisMonth = () => {
-        const thisYear = new Date().getFullYear();
-        const thisMonth = new Date().getMonth() + 1;
-        setCtrlYear(thisYear);
-        setCtrlMonth(thisMonth);
-        getMonthDays(thisYear, thisMonth, setDays);
-        window.scrollTo(0, 0);
-    };
+  const [isMounted, setIsMounted] = useState(false);
 
-    const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
-    useEffect(() => {
-        setIsMounted(true);
-    }, []);
+  useEffect(() => {
+    if (!isMounted) return;
+    handleCheckIsDesktopView();
+    removePastSchedule(isMounted, fetchTodoMemo);
+  }, [isMounted, fetchTodoMemo]);
 
-    useEffect(() => {
-        if (!isMounted) return;
-        handleCheckIsDesktopView();
-        removePastSchedule(isMounted, fetchTodoMemo);
-    }, [isMounted, fetchTodoMemo]);
+  useEffect(() => {
+    getMonthDays(ctrlYear, ctrlMonth, setDays);
+  }, [ctrlMonth]);
 
-    useEffect(() => {
-        getMonthDays(ctrlYear, ctrlMonth, setDays);
-    }, [ctrlMonth]);
+  return (
+    <section className="mx-auto mb-20 w-full max-w-screen-lg">
+      <h2 className="mb-2 text-xl font-bold">
+        {ctrlYear}年{ctrlMonth}月
+      </h2>
 
-    return (
-        <section className="max-w-screen-lg w-full mx-auto mb-20">
-            <h2 className="text-xl font-bold mb-2">{ctrlYear}年{ctrlMonth}月</h2>
+      {/* 左右分割レイアウト用の全体コンテナ */}
+      <div className="mt-6 flex flex-row gap-8 bg-gray-50 p-4">
+        {/* カレンダー（日付選択）エリア */}
+        <div className="w-full">
+          <PrevNextMonthBtns
+            className="flex justify-between"
+            ctrlYear={ctrlYear}
+            setCtrlYear={setCtrlYear}
+            ctrlMonth={ctrlMonth}
+            setCtrlMonth={setCtrlMonth}
+          />
 
-            <PrevNextMonthBtns props={{
-                className: "flex justify-between",
-                ctrlYear,
-                setCtrlYear,
-                ctrlMonth,
-                setCtrlMonth
-            }} />
+          {/* 曜日ヘッダー */}
+          <ul className="my-4 grid grid-cols-7 place-items-center font-medium text-gray-500">
+            <DaydateList days={days} />
+          </ul>
 
-            <button className="bg-green-700 text-white px-4 py-1 rounded my-4" type="button" onClick={jumpThisMonth}>今月</button>
+          {/* 日付グリッド */}
+          <ul className="m-0 grid list-none grid-cols-7 place-content-start place-items-center gap-x-2 gap-y-2 rounded-md p-0">
+            <DaysList
+              days={days}
+              selectedDate={selectedDate}
+              setSelectedDate={setSelectedDate}
+            />
+          </ul>
+        </div>
 
-            {/* 左右分割レイアウト用の全体コンテナ */}
-            <div className="flex flex-row gap-8 mt-6 bg-gray-50 p-4">
-
-                {/* カレンダー（日付選択）エリア */}
-                <div className="w-full">
-                
-                    {/* 曜日ヘッダー */}
-                    <ul className="grid grid-cols-7 place-items-center text-gray-500 font-medium">
-                        <DaydateList days={days} />
-                    </ul>
-
-                    {/* 日付グリッド */}
-                    <ul className="grid grid-cols-7 place-items-center place-content-start rounded-md list-none p-0 m-0 gap-x-2 gap-y-2">
-                        <DaysList
-                            days={days}
-                            selectedDate={selectedDate}
-                            setSelectedDate={setSelectedDate}
-                        />
-                    </ul>
-                </div>
-
-                {/* 時間選択エリア（日付に応じて表示） */}
-                <div className="w-64 pl-8 border-l border-gray-300">
-                    <TimeSelector
-                        selectedDate={selectedDate}
-                        selectedTime={selectedTime}
-                        setSelectedTime={setSelectedTime}
-                    />
-                </div>
-            </div>
-        </section>
-    );
+        {/* 時間選択エリア（日付に応じて表示） */}
+        <div className="w-64 border-l border-gray-300 pl-8">
+          <TimeSelector
+            selectedDate={selectedDate}
+            selectedTime={selectedTime}
+            setSelectedTime={setSelectedTime}
+          />
+        </div>
+      </div>
+    </section>
+  );
 }
 
 export default memo(Calendar);
