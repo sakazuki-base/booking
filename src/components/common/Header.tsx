@@ -10,13 +10,14 @@ export default async function Header() {
     <header className="bg-white p-4 shadow">
       <nav className="mx-auto flex max-w-screen-xl items-center justify-between">
         {/* 左側：ロゴ */}
-        <Image
-          src="/icons/logo.png"
-          alt="SakaZuki Base"
-          width={40}
-          height={40}
-        />
-
+        <Link href="/" className="hover:text-blue-600">
+          <Image
+            src="/icons/logo.png"
+            alt="SakaZuki Base"
+            width={40}
+            height={40}
+          />
+        </Link>
         {/* 右側：リンク群 */}
         <ul className="flex space-x-6 text-sm font-medium">
           <li>

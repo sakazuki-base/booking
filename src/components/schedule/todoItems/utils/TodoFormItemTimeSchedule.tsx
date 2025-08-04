@@ -1,9 +1,10 @@
-import todoStyle from "../styles/todoStyle.module.css";
+"use client";
+
 import type { ChangeEvent, Dispatch, RefObject, SetStateAction } from "react";
-import { memo } from "react";
 import type { todoItemType } from "../ts/todoItemType";
+import { memo } from "react";
 import { useCheckTimeValidation } from "../hooks/useCheckTimeValidation";
-import { useHandleFormEntries } from "@/hooks/useHandleFormEntries";
+import { timeBlockBegin, timeBlockEnd } from "@/types/rooms-atom";
 
 function TodoFormItemTimeSchedule({
   todoItems,
@@ -15,44 +16,55 @@ function TodoFormItemTimeSchedule({
   validationTxtRef?: RefObject<string>;
 }) {
   const { checkTimeValidation } = useCheckTimeValidation();
-  const { handleFormEntries } = useHandleFormEntries();
 
-  const handleTimeSchedule: (e: ChangeEvent<HTMLInputElement>) => void = (
-    e: ChangeEvent<HTMLInputElement>,
-  ) => {
-    checkTimeValidation(todoItems, validationTxtRef);
-    handleFormEntries<todoItemType>(e, todoItems, setTodoItems);
+  // 9:00〜21:00 まで1時間刻み
+  const timeOptions = Array.from(
+    { length: timeBlockEnd - timeBlockBegin },
+    (_, i) => {
+      const hour = i + timeBlockBegin;
+      return `${String(hour).padStart(2, "0")}:00`;
+    },
+  );
+
+  const handleTimeChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    const { id, value } = e.target;
+    const newTodo = { ...todoItems, [id]: value };
+    checkTimeValidation(newTodo, validationTxtRef);
+    setTodoItems(newTodo);
   };
 
   return (
-    <div className={todoStyle.timeSchedule}>
-      <label className={todoStyle.timeLabel}>
+    <div className="flex justify-start gap-4">
+      <label className="w-full text-left">
         <span>開始時刻</span>
-        <input
+        <select
           id="startTime"
-          type="time"
-          value={
-            // Safari（Mac OS）での表示及び登録機能の不具合対策
-            // 以下記述でないと 12:30 で表示されてしまい、登録機能も動かなくなってしまう（※ドロップダウンリストが表示されないのはブラウザ仕様）
-            todoItems.startTime?.length === 0 ? "00:00" : todoItems.startTime
-          }
-          onChange={(e: ChangeEvent<HTMLInputElement>) => {
-            handleTimeSchedule(e);
-          }}
-        />
+          value={todoItems.startTime || "09:00"}
+          onChange={handleTimeChange}
+          className="w-full rounded border border-gray-300 px-1 py-1"
+        >
+          {timeOptions.map((time) => (
+            <option key={time} value={time}>
+              {time}
+            </option>
+          ))}
+        </select>
       </label>
-      <label className={todoStyle.timeLabel}>
+
+      <label className="w-full text-left">
         <span>終了時刻</span>
-        <input
+        <select
           id="finishTime"
-          type="time"
-          value={
-            todoItems.finishTime?.length === 0 ? "00:00" : todoItems.finishTime
-          }
-          onChange={(e: ChangeEvent<HTMLInputElement>) => {
-            handleTimeSchedule(e);
-          }}
-        />
+          value={todoItems.finishTime || "10:00"}
+          onChange={handleTimeChange}
+          className="w-full rounded border border-gray-300 px-1 py-1"
+        >
+          {timeOptions.map((time) => (
+            <option key={time} value={time}>
+              {time}
+            </option>
+          ))}
+        </select>
       </label>
     </div>
   );

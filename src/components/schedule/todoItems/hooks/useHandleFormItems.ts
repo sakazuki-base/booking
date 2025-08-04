@@ -1,4 +1,4 @@
-import { SyntheticEvent } from "react";
+import type { SyntheticEvent } from "react";
 import { useViewTodoCtrl } from "./useViewTodoCtrl";
 import { useScrollTop } from "@/hooks/useScrollTop";
 

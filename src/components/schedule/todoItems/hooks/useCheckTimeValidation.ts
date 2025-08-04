@@ -1,5 +1,5 @@
-import { RefObject } from "react";
-import { todoItemType } from "../ts/todoItemType";
+import type { RefObject } from "react";
+import type { todoItemType } from "../ts/todoItemType";
 import { timeBlockBegin, timeBlockEnd } from "@/types/rooms-atom";
 import { useCheckTimeBlockEntryForm } from "./useCheckTimeBlockEntryForm";
 

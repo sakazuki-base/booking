@@ -1,14 +1,12 @@
-import { memo, useRef, useState } from "react";
+"use client";
+
 import type { ChangeEvent } from "react";
-import todoStyle from "./styles/todoStyle.module.css";
+import type { todoItemType } from "./ts/todoItemType";
+import { memo, useRef, useState } from "react";
 import { useAtom } from "jotai";
 import { roomsAtom } from "@/types/rooms-atom";
-import type { todoItemType } from "./ts/todoItemType";
-import TodoFormItemContent from "./utils/TodoFormItemContent";
-import TodoFormItemPerson from "./utils/TodoFormItemPerson";
 import TodoFormItemRoom from "./utils/TodoFormItemRoom";
 import TodoFormItemTimeSchedule from "./utils/TodoFormItemTimeSchedule";
-import TodoFormItemPassword from "./utils/TodoFormItemPassword";
 import TodoFormItemRegiBtn from "./utils/TodoFormItemRegiBtn";
 import { useRegiTodoItem } from "./hooks/useRegiTodoItem";
 import { useUpdateTodoItem } from "./hooks/useUpdateTodoItem";
@@ -16,28 +14,34 @@ import { useScrollTop } from "@/hooks/useScrollTop";
 import { useHandleFormItems } from "./hooks/useHandleFormItems";
 
 type TodoFormType = {
+  selectedDate: string;
+  selectedTime: number | null;
   todoItem?: todoItemType;
-  todoId?: string;
 };
 
 function TodoForm({ props }: { props: TodoFormType }) {
-  const { todoItem, todoId } = props;
-
+  const { selectedDate, selectedTime, todoItem } = props;
   const [rooms] = useAtom(roomsAtom);
-
   const roomRef = useRef<null | HTMLSelectElement>(null);
   const validationTxtRef = useRef<string>("");
 
+  const [year, month, day] = selectedDate.split("/").map(Number);
+  const todoId = `${year}/${month!.toString().padStart(2, "0")}/${day!.toString().padStart(2, "0")}`;
+
   const initTodoItems: todoItemType = {
-    id: todoItem ? todoItem.id : "001",
-    todoID: todoId ? todoId : todoItem ? todoItem.todoID : "001",
+    id: todoItem ? todoItem.id : "undefined",
+    todoID: todoId ? todoId : "undefined",
     todoContent: "",
     edit: todoItem ? todoItem.edit : false,
     pw: "",
     person: todoItem ? todoItem.person : "",
     rooms: roomRef.current !== null ? roomRef.current.value : rooms[0]!.room,
-    startTime: "",
-    finishTime: "",
+    startTime: selectedTime
+      ? `${selectedTime.toString().padStart(2, "0")}:00`
+      : "",
+    finishTime: selectedTime
+      ? `${(selectedTime + 1).toString().padStart(2, "0")}:00`
+      : "",
   };
   const [todoItems, setTodoItems] = useState<todoItemType>(initTodoItems);
 
@@ -53,7 +57,7 @@ function TodoForm({ props }: { props: TodoFormType }) {
 
   return (
     <form
-      className={todoStyle.todoForm}
+      className="relative text-[1.4rem] leading-[1.8]"
       onSubmit={(formElm: ChangeEvent<HTMLFormElement>) => {
         formElm.preventDefault();
         if (!todoItems.edit) {
@@ -65,12 +69,6 @@ function TodoForm({ props }: { props: TodoFormType }) {
         resetStates();
       }}
     >
-      {/* 予約内容 */}
-      <TodoFormItemContent todoItems={todoItems} setTodoItems={setTodoItems} />
-
-      {/* 予約者／部署名 */}
-      <TodoFormItemPerson todoItems={todoItems} setTodoItems={setTodoItems} />
-
       {/* 予約室 */}
       <TodoFormItemRoom
         rooms={rooms}
@@ -86,9 +84,6 @@ function TodoForm({ props }: { props: TodoFormType }) {
         setTodoItems={setTodoItems}
         validationTxtRef={validationTxtRef}
       />
-
-      {/* パスワード */}
-      <TodoFormItemPassword todoItems={todoItems} setTodoItems={setTodoItems} />
 
       {/* 登録ボタン */}
       <TodoFormItemRegiBtn

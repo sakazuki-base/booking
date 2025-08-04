@@ -1,3 +1,5 @@
+"use client";
+
 import type {
   ChangeEvent,
   Dispatch,
@@ -17,12 +19,14 @@ function TodoFormItemRoom({
   setTodoItems,
   roomRef,
   validationTxtRef,
+  isSelectable = false,
 }: {
   rooms: roomsType;
   todoItems: todoItemType;
   setTodoItems: Dispatch<SetStateAction<todoItemType>>;
   roomRef: Ref<HTMLSelectElement> | undefined;
   validationTxtRef?: RefObject<string>;
+  isSelectable?: boolean;
 }) {
   const { handleFormEntries } = useHandleFormEntries();
 
@@ -36,20 +40,24 @@ function TodoFormItemRoom({
           <label>
             <span>場所</span>
           </label>
-          <select
-            name="rooms"
-            id="rooms"
-            ref={roomRef}
-            onChange={(e: ChangeEvent<HTMLSelectElement>) =>
-              handleFormEntries<todoItemType>(e, todoItems, setTodoItems)
-            }
-          >
-            {rooms.map((room, i) => (
-              <option key={i} value={room.room}>
-                {room.room}
-              </option>
-            ))}
-          </select>
+          {isSelectable ? (
+            <select
+              name="rooms"
+              id="rooms"
+              ref={roomRef}
+              onChange={(e: ChangeEvent<HTMLSelectElement>) =>
+                handleFormEntries<todoItemType>(e, todoItems, setTodoItems)
+              }
+            >
+              {rooms.map((room, i) => (
+                <option key={i} value={room.room}>
+                  {room.room}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <span>: {todoItems.rooms}</span>
+          )}
         </>
       )}
     </>

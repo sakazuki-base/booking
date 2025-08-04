@@ -1,6 +1,6 @@
-import { ChangeEvent } from "react";
+import type { ChangeEvent } from "react";
+import type { todoItemType } from "../ts/todoItemType";
 import { timeBlockBegin, timeBlockEnd } from "@/types/rooms-atom";
-import { todoItemType } from "../ts/todoItemType";
 import { useAtom } from "jotai";
 import { todoMemoAtom } from "@/types/calendar-atom";
 

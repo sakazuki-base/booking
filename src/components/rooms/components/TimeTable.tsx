@@ -2,7 +2,7 @@ import roomStyle from "../styles/roomstyle.module.css";
 import { memo } from "react";
 import { timeBlockBegin, timeBlockEnd } from "@/types/rooms-atom";
 import TimeBlock from "./TimeBlock";
-import { todoItemType } from "../../schedule/todoItems/ts/todoItemType";
+import type { todoItemType } from "../../schedule/todoItems/ts/todoItemType";
 
 type timeTableProps = {
   room: string;

@@ -7,8 +7,8 @@ export const metadata: Metadata = {
   title: "Reserve-Sys",
   description: "予約システムUI",
   robots: {
-    index: false, // noindex
-    follow: false // nofollow
+    index: false,
+    follow: false,
   },
 };
 
@@ -21,9 +21,7 @@ export default function RootLayout({
     <html lang="ja" data-scroll-behavior="smooth">
       <body>
         <Header />
-        <div className="globalWrapper">
-          {children}
-        </div>
+        <div className="globalWrapper">{children}</div>
         <Footer />
       </body>
     </html>

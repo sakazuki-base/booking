@@ -1,7 +1,8 @@
-import todoStyle from "../styles/todoStyle.module.css";
+"use client";
+
 import type { RefObject, SyntheticEvent } from "react";
-import { memo, useMemo } from "react";
 import type { todoItemType } from "../ts/todoItemType";
+import { memo, useMemo } from "react";
 import { useCloseModalWindow } from "../hooks/useCloseModalWindow";
 import { useRegiTodoItem } from "../hooks/useRegiTodoItem";
 import { useUpdateTodoItem } from "../hooks/useUpdateTodoItem";
@@ -22,8 +23,6 @@ function TodoFormItemRegiBtn({
   const { handleOpenClosedBtnClicked } = useHandleFormItems();
 
   const isBtnDisabled: boolean = useMemo(() => {
-    const isCheckPw: boolean = todoItems.pw.length === 0;
-    const isCheckContent: boolean = todoItems.todoContent.length === 0;
     const isValidationTxt: boolean =
       typeof validationTxtRef !== "undefined" &&
       validationTxtRef.current.length > 0;
@@ -34,11 +33,7 @@ function TodoFormItemRegiBtn({
           parseInt(todoItems.finishTime.replace(":", ""))
         : false;
 
-    return (
-      isCheckPw || isCheckContent || isValidationTxt || inCorrectTimeSchedule
-    );
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    return isValidationTxt || inCorrectTimeSchedule;
   }, [todoItems]);
 
   // 編集後に edit:true のままだと誰でも編集できてしまうので false に上書き（＝再編集を行うには再度パスワード入力が必要となる）
@@ -54,8 +49,7 @@ function TodoFormItemRegiBtn({
 
   return (
     <button
-      className={todoStyle.formBtns}
-      id={todoStyle.regiUpdateBtn}
+      className={`relative w-full rounded bg-green-600 px-4 py-2 text-white hover:bg-green-700 disabled:opacity-50`}
       type="button"
       disabled={isBtnDisabled}
       onClick={(btnEl: SyntheticEvent<HTMLButtonElement>) => {

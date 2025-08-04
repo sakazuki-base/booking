@@ -2,20 +2,23 @@ import React, { memo, useMemo } from "react";
 import type { calendarItemType } from "../ts/calendarItemType";
 
 function DaysList({
-  days,
-  selectedDate,
-  setSelectedDate,
+  days, // 当月の日付リスト
+  selectedDate, // 選択日の現在値
+  setSelectedDate, // 選択日の更新関数
 }: {
   days: calendarItemType[];
   selectedDate: string | null;
   setSelectedDate: React.Dispatch<React.SetStateAction<string | null>>;
 }) {
+  // 日付ボタン押下で日付選択状態をトグルで切り替え
   const handleDayClick = (day: calendarItemType) => {
     const key = `${day.year}/${day.month}/${day.day}`;
     setSelectedDate((prev) => (prev === key ? null : key));
   };
 
+  // 初回マウント時の日付を保持
   const todayDate = useMemo(() => {
+    // 現在日時から日付のみを抽出
     const now = new Date();
     return new Date(now.getFullYear(), now.getMonth(), now.getDate());
   }, []);

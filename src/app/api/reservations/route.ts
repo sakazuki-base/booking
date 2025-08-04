@@ -10,6 +10,8 @@ export async function GET() {
 
 // POST
 export async function POST(request: Request) {
+  console.log("POST /api/reservations called");
+
   const data: todoItemType = await request.json();
 
   const reservation = await prisma.reservation.create({

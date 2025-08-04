@@ -2,18 +2,34 @@
 
 import { memo, useEffect, useState } from "react";
 import type { calendarItemType } from "./ts/calendarItemType";
-import { useAtom } from "jotai";
+import { useAtom, useSetAtom } from "jotai";
 import { fetchTodoMemoAtom, isDesktopViewAtom } from "@/types/calendar-atom";
 import PrevNextMonthBtns from "./components/PrevNextMonthBtns";
 import DaydateList from "./components/DaydateList";
 import DaysList from "./components/DaysList";
 import { useGetMonthDays } from "./hooks/useGetMonthDays";
 import { useRemovePastSchedule } from "./hooks/useRemovePastSchedule";
-import TimeSelector from "./components/TimeSelector";
+
+// ⬇️ TimeSelectorを「クライアント専用」で動的インポート
+import dynamic from "next/dynamic";
+const TimeSelector = dynamic(() => import("./components/TimeSelector"), {
+  ssr: false,
+});
 
 function Calendar() {
   const [, setDesktopView] = useAtom(isDesktopViewAtom);
-  const [fetchTodoMemo] = useAtom(fetchTodoMemoAtom);
+  const setFetchTodoMemo = useSetAtom(fetchTodoMemoAtom);
+
+  // 予約一覧を初期化（Hydration Mismatch 防止）
+  useEffect(() => {
+    const fetchReservations = async () => {
+      const res = await fetch("/api/reservations");
+      const data = await res.json();
+      setFetchTodoMemo(data);
+    };
+    fetchReservations();
+  }, [setFetchTodoMemo]);
+
   const currYear = new Date().getFullYear();
   const currMonth = new Date().getMonth() + 1;
   const [ctrlYear, setCtrlYear] = useState<number>(currYear);
@@ -36,18 +52,18 @@ function Calendar() {
     setIsMounted(true);
   }, []);
 
+  // isMounted だけ監視でOK
   useEffect(() => {
     if (!isMounted) return;
     handleCheckIsDesktopView();
-    removePastSchedule(isMounted, fetchTodoMemo);
-  }, [isMounted, fetchTodoMemo]);
+  }, [isMounted]);
 
   useEffect(() => {
     getMonthDays(ctrlYear, ctrlMonth, setDays);
   }, [ctrlMonth]);
 
   return (
-    <section className="mx-auto mb-20 w-full max-w-screen-lg">
+    <section className="mx-auto mb-20 w-full max-w-screen-md">
       <h2 className="mb-2 text-xl font-bold">
         {ctrlYear}年{ctrlMonth}月
       </h2>
