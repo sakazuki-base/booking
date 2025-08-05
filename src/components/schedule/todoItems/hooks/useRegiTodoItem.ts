@@ -2,14 +2,10 @@ import type { todoItemType } from "../ts/todoItemType";
 import { v4 as uuidv4 } from "uuid";
 import { useAtom, useSetAtom } from "jotai";
 import { todoMemoAtom, fetchTodoMemoAtom } from "@/types/calendar-atom";
-import { useCreateTimeSpace } from "@/hooks/useCreateTimeSpace";
 
 export const useRegiTodoItem = () => {
   const [todoMemo, setTodoMemo] = useAtom(todoMemoAtom);
   const setFetchTodoMemo = useSetAtom(fetchTodoMemoAtom);
-
-  // 予約終了時間に+15分の余剰時間を設ける
-  //const { createTimeSpace } = useCreateTimeSpace();
 
   /* データベースに予約を登録 */
   const createReservation: (
@@ -52,12 +48,11 @@ export const useRegiTodoItem = () => {
     const newTodoList: todoItemType = {
       ...shallowCopyTodoItems,
       id: uuidv4(), // key へ渡すための固有の識別子（uuid：Universally Unique Identifier）を生成
-      //finishTime: createTimeSpace(shallowCopyTodoItems.finishTime),
     };
 
     createReservation(newTodoList);
     setTodoMemo([...todoMemo, newTodoList]);
-    //location.reload(); // 登録直後に当該内容を更新すると 500エラーになるため再読み込みさせて登録完了させておく
+    location.reload(); // 登録直後に当該内容を更新すると 500エラーになるため再読み込みさせて登録完了させておく
   };
 
   return { regiTodoItem };

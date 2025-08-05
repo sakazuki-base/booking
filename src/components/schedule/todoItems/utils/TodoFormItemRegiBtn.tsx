@@ -3,7 +3,6 @@
 import type { RefObject, SyntheticEvent } from "react";
 import type { todoItemType } from "../ts/todoItemType";
 import { memo, useMemo } from "react";
-import { useCloseModalWindow } from "../hooks/useCloseModalWindow";
 import { useRegiTodoItem } from "../hooks/useRegiTodoItem";
 import { useUpdateTodoItem } from "../hooks/useUpdateTodoItem";
 import { useHandleFormItems } from "../hooks/useHandleFormItems";
@@ -17,7 +16,6 @@ function TodoFormItemRegiBtn({
   resetStates: () => void;
   validationTxtRef?: RefObject<string>;
 }) {
-  const { closeModalWindow } = useCloseModalWindow();
   const { regiTodoItem } = useRegiTodoItem();
   const { updateTodoItem } = useUpdateTodoItem();
   const { handleOpenClosedBtnClicked } = useHandleFormItems();
@@ -59,7 +57,6 @@ function TodoFormItemRegiBtn({
         } else {
           btnEl.stopPropagation(); // 親要素のクリックイベント（OnViewModalWindow）発生を防止
           adjustEditState_updateTodoItem(todoItems);
-          closeModalWindow();
         }
         resetStates();
       }}

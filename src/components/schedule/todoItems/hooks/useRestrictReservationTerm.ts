@@ -1,4 +1,4 @@
-import { calendarItemType } from "../../calendar/ts/calendarItemType";
+import type { calendarItemType } from "../../calendar/ts/calendarItemType";
 
 export const useRestrictReservationTerm = () => {
   const restrictReservationTerm: (day: calendarItemType) => boolean = (

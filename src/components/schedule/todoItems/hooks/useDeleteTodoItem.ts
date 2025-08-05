@@ -1,4 +1,4 @@
-import { todoItemType } from "../ts/todoItemType";
+import type { todoItemType } from "../ts/todoItemType";
 import { useAtom } from "jotai";
 import { todoMemoAtom } from "@/types/calendar-atom";
 

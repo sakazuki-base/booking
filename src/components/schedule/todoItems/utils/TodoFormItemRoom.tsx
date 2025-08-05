@@ -9,7 +9,7 @@ import type {
 } from "react";
 import { memo } from "react";
 import type { todoItemType } from "../ts/todoItemType";
-import type { roomsType } from "@/components/rooms/ts/roomsType";
+import type { roomsType } from "@/components/schedule/todoItems/ts/roomsType.ts";
 import { useHandleFormEntries } from "@/hooks/useHandleFormEntries";
 import { useCheckTimeValidation } from "../hooks/useCheckTimeValidation";
 
