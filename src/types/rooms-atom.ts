@@ -1,7 +1,7 @@
 import { atom } from "jotai";
 import type { roomsType } from "../components/schedule/todoItems/ts/roomsType";
 
-export const timeBlockBegin: number = 9; // 予約可能-開始時間
+export const timeBlockBegin: number = 8; // 予約可能-開始時間
 export const timeBlockEnd: number = 22; // 予約可能-終了時間
 
 //「：」より後の文字がスケジュールテーブルに表示されます

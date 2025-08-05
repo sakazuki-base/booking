@@ -7,13 +7,13 @@ import { todoMemoAtom } from "@/types/calendar-atom";
 export const useCheckTimeBlockEntryForm = () => {
   const [todoMemo] = useAtom(todoMemoAtom);
 
-  /* `src/app/types/rooms-atom.ts`で指定した予約受付可能な時間帯かチェック */
+  /* 予約受付可能な時間帯かチェック */
   const checkTimeBlockEntryForm: (
     e: ChangeEvent<HTMLInputElement> | string,
   ) => boolean = (e: ChangeEvent<HTMLInputElement> | string) => {
     const valueStr: string = typeof e !== "string" ? e.target.value : e;
     const isNoReservationTime: boolean =
-      parseInt(valueStr) < timeBlockBegin || parseInt(valueStr) >= timeBlockEnd;
+      parseInt(valueStr) < timeBlockBegin || parseInt(valueStr) > timeBlockEnd;
 
     return isNoReservationTime;
   };
@@ -63,20 +63,12 @@ export const useCheckTimeBlockEntryForm = () => {
             ? parseInt(todoItems.finishTime.replace(":", ""))
             : theTime;
 
-        // 00分スタートと、それ以外の場合で差計算用の数値を調整（hh:00 -> -hh:46, hh:45 -> hh:31）
-        const calcBufferingStartTime =
-          memoStartTime.toString().slice(2, 4) === "00" ? 54 : 14;
-
-        // console.log("既存予約:", memoStartTime, memoFinishTime);
-        // console.log("チェック対象:", theStartTime, theFinishTime);
-
         // 時間の重複チェックロジック
         const isOverlap: boolean =
           // 新しい予約の開始時間が既存の予約時間内にある
-          (theStartTime >= memoStartTime && theStartTime <= memoFinishTime) ||
-          // 新しい予約の終了時間が既存の（15分余剰を含んだ）予約時間内にある
-          (theFinishTime >= memoStartTime - calcBufferingStartTime &&
-            theFinishTime <= memoFinishTime) ||
+          (memoStartTime <= theStartTime && theStartTime < memoFinishTime) ||
+          // 新しい予約の終了時間が既存の予約時間内にある
+          (memoStartTime <= theFinishTime && theFinishTime < memoFinishTime) ||
           // 新しい予約が既存の予約を完全に包含している
           (theStartTime <= memoStartTime && theFinishTime >= memoFinishTime);
 

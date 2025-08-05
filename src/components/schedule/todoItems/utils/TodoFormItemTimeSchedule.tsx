@@ -17,11 +17,19 @@ function TodoFormItemTimeSchedule({
 }) {
   const { checkTimeValidation } = useCheckTimeValidation();
 
-  // 9:00〜21:00 まで1時間刻み
-  const timeOptions = Array.from(
+  // 8:00〜21:00 まで1時間刻み
+  const timeOptionsStart = Array.from(
     { length: timeBlockEnd - timeBlockBegin },
     (_, i) => {
       const hour = i + timeBlockBegin;
+      return `${String(hour).padStart(2, "0")}:00`;
+    },
+  );
+  // 9:00〜22:00 まで1時間刻み
+  const timeOptionsFinish = Array.from(
+    { length: timeBlockEnd - timeBlockBegin },
+    (_, i) => {
+      const hour = i + timeBlockBegin + 1;
       return `${String(hour).padStart(2, "0")}:00`;
     },
   );
@@ -43,7 +51,7 @@ function TodoFormItemTimeSchedule({
           onChange={handleTimeChange}
           className="w-full rounded border border-gray-300 px-1 py-1"
         >
-          {timeOptions.map((time) => (
+          {timeOptionsStart.map((time) => (
             <option key={time} value={time}>
               {time}
             </option>
@@ -59,7 +67,7 @@ function TodoFormItemTimeSchedule({
           onChange={handleTimeChange}
           className="w-full rounded border border-gray-300 px-1 py-1"
         >
-          {timeOptions.map((time) => (
+          {timeOptionsFinish.map((time) => (
             <option key={time} value={time}>
               {time}
             </option>

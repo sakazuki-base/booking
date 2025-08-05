@@ -1,5 +1,3 @@
-"use client";
-
 import Calendar from "../components/schedule/calendar/Calendar";
 
 export default function Home() {

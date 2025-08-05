@@ -23,10 +23,12 @@ export const useCheckTimeValidation = () => {
         todoItems.startTime,
         todoItems,
       );
+
       const isCheckTimeSchedule_finish: boolean = checkTimeSchedule(
         todoItems.finishTime,
         todoItems,
       );
+
       if (isCheckTimeSchedule_start || isCheckTimeSchedule_finish) {
         validationTxtRef.current = "他の方が既に予約済みです";
       }
@@ -34,15 +36,18 @@ export const useCheckTimeValidation = () => {
       const isCheckTimeBlockEntryForm_start: boolean = checkTimeBlockEntryForm(
         todoItems.startTime,
       );
+
       const isCheckTimeBlockEntryForm_finish: boolean = checkTimeBlockEntryForm(
         todoItems.finishTime,
       );
+
       if (isCheckTimeBlockEntryForm_start || isCheckTimeBlockEntryForm_finish) {
         validationTxtRef.current = `「${timeBlockBegin}時〜${timeBlockEnd}時」の時間帯で指定してください`;
       }
 
       const isCheckTimeSchedule_FALSE: boolean =
         !isCheckTimeSchedule_start && !isCheckTimeSchedule_finish;
+
       const isCheckTimeBlockEntryForm_FALSE: boolean =
         !isCheckTimeBlockEntryForm_start && !isCheckTimeBlockEntryForm_finish;
 

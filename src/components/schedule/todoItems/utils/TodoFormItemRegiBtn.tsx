@@ -6,24 +6,27 @@ import { memo, useMemo } from "react";
 import { useRegiTodoItem } from "../hooks/useRegiTodoItem";
 import { useUpdateTodoItem } from "../hooks/useUpdateTodoItem";
 import { useHandleFormItems } from "../hooks/useHandleFormItems";
+import { useState } from "react";
 
 function TodoFormItemRegiBtn({
   todoItems,
   resetStates,
-  validationTxtRef,
+  validationTxt,
+  setValidationTxt,
 }: {
   todoItems: todoItemType;
   resetStates: () => void;
-  validationTxtRef?: RefObject<string>;
+  validationTxt: string;
+  setValidationTxt: (v: string) => void;
 }) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { regiTodoItem } = useRegiTodoItem();
   const { updateTodoItem } = useUpdateTodoItem();
   const { handleOpenClosedBtnClicked } = useHandleFormItems();
 
   const isBtnDisabled: boolean = useMemo(() => {
     const isValidationTxt: boolean =
-      typeof validationTxtRef !== "undefined" &&
-      validationTxtRef.current.length > 0;
+      typeof validationTxt !== "undefined" && validationTxt.length > 0;
     const inCorrectTimeSchedule: boolean =
       typeof todoItems.startTime !== "undefined" &&
       typeof todoItems.finishTime !== "undefined"
@@ -49,23 +52,26 @@ function TodoFormItemRegiBtn({
     <button
       className={`relative w-full rounded bg-green-600 px-4 py-2 text-white hover:bg-green-700 disabled:opacity-50`}
       type="button"
-      disabled={isBtnDisabled}
-      onClick={(btnEl: SyntheticEvent<HTMLButtonElement>) => {
-        if (!todoItems.edit) {
-          regiTodoItem(todoItems);
-          handleOpenClosedBtnClicked(btnEl.currentTarget);
-        } else {
-          btnEl.stopPropagation(); // 親要素のクリックイベント（OnViewModalWindow）発生を防止
-          adjustEditState_updateTodoItem(todoItems);
-        }
+      disabled={isBtnDisabled || isSubmitting}
+      onClick={async (btnEl) => {
+        setIsSubmitting(true);
+        setValidationTxt("");
+
+        // 登録中にウェイトを入れることでボタンの表示を再レンダリング
+        await regiTodoItem(todoItems);
+        await new Promise((res) => setTimeout(res, 500));
+
+        handleOpenClosedBtnClicked(btnEl.currentTarget);
         resetStates();
+        setIsSubmitting(false);
       }}
     >
-      {!todoItems.edit ? "登録" : "再登録"}
-      {typeof validationTxtRef !== "undefined" &&
-        validationTxtRef.current.length > 0 && (
-          <span>{validationTxtRef.current}</span>
-        )}
+      {isSubmitting ? "登録中..." : "登録"}
+
+      {/* isSubmitting中はバリデーション非表示 */}
+      {!isSubmitting && validationTxt.length > 0 && (
+        <span>{validationTxt}</span>
+      )}
     </button>
   );
 }

@@ -9,12 +9,7 @@ import DaydateList from "./components/DaydateList";
 import DaysList from "./components/DaysList";
 import { useGetMonthDays } from "./hooks/useGetMonthDays";
 import { useRemovePastSchedule } from "./hooks/useRemovePastSchedule";
-
-// ⬇️ TimeSelectorを「クライアント専用」で動的インポート
-import dynamic from "next/dynamic";
-const TimeSelector = dynamic(() => import("./components/TimeSelector"), {
-  ssr: false,
-});
+import TimeSelector from "./components/TimeSelector";
 
 function Calendar() {
   const [, setDesktopView] = useAtom(isDesktopViewAtom);

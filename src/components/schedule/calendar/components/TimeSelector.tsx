@@ -5,11 +5,7 @@ import { timeBlockBegin, timeBlockEnd } from "@/types/rooms-atom";
 import { useAtom } from "jotai";
 import { fetchTodoMemoAtom } from "@/types/calendar-atom";
 import { useState, useEffect } from "react";
-
-import dynamic from "next/dynamic";
-const TodoForm = dynamic(() => import("../../todoItems/TodoForm"), {
-  ssr: false,
-});
+import TodoForm from "../../todoItems/TodoForm";
 
 export default function TimeSelector({
   selectedDate,

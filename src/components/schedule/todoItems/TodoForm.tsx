@@ -49,6 +49,7 @@ function TodoForm({ props }: { props: TodoFormType }) {
   const { updateTodoItem } = useUpdateTodoItem();
   const { scrollTop } = useScrollTop();
   const { handleOpenClosedBtnClicked } = useHandleFormItems();
+  const [validationTxt, setValidationTxt] = useState("");
 
   const resetStates: () => void = () => {
     setTodoItems(initTodoItems);
@@ -89,7 +90,8 @@ function TodoForm({ props }: { props: TodoFormType }) {
       <TodoFormItemRegiBtn
         todoItems={todoItems}
         resetStates={resetStates}
-        validationTxtRef={validationTxtRef}
+        validationTxt={validationTxt}
+        setValidationTxt={setValidationTxt}
       />
     </form>
   );

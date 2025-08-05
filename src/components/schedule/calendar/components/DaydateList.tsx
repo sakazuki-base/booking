@@ -1,5 +1,7 @@
-import { memo, useMemo } from "react";
+"use client";
+
 import type { calendarItemType } from "../ts/calendarItemType";
+import { memo, useMemo } from "react";
 
 function DaydateList({ days }: { days: calendarItemType[] }) {
   const theOneWeek = useMemo(() => {

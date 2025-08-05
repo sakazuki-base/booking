@@ -1,3 +1,5 @@
+"use client";
+
 import React, { memo, useMemo } from "react";
 import type { calendarItemType } from "../ts/calendarItemType";
 

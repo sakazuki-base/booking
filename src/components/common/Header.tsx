@@ -33,7 +33,7 @@ export default async function Header() {
           {/* ログイン中はユーザー名表示 */}
           {session?.user && (
             <li className="text-gray-700">
-              ようこそ、
+              ようこそ{" "}
               <span className="font-semibold">{session.user.name}</span> さん
             </li>
           )}
