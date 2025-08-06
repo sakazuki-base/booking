@@ -8,17 +8,19 @@ import { useUpdateTodoItem } from "../hooks/useUpdateTodoItem";
 import { useHandleFormItems } from "../hooks/useHandleFormItems";
 import { useState } from "react";
 
+export type TodoFormItemRegiBtnProps = {
+  todoItems: todoItemType;
+  resetStates: () => void;
+  validationTxt: string;
+  validationTxtRef?: RefObject<string>;
+};
+
 function TodoFormItemRegiBtn({
   todoItems,
   resetStates,
   validationTxt,
-  setValidationTxt,
-}: {
-  todoItems: todoItemType;
-  resetStates: () => void;
-  validationTxt: string;
-  setValidationTxt: (v: string) => void;
-}) {
+  validationTxtRef,
+}: TodoFormItemRegiBtnProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { regiTodoItem } = useRegiTodoItem();
   const { updateTodoItem } = useUpdateTodoItem();
@@ -26,7 +28,8 @@ function TodoFormItemRegiBtn({
 
   const isBtnDisabled: boolean = useMemo(() => {
     const isValidationTxt: boolean =
-      typeof validationTxt !== "undefined" && validationTxt.length > 0;
+      typeof typeof validationTxtRef !== "undefined" &&
+      validationTxtRef!.current.length > 0;
     const inCorrectTimeSchedule: boolean =
       typeof todoItems.startTime !== "undefined" &&
       typeof todoItems.finishTime !== "undefined"
@@ -55,7 +58,7 @@ function TodoFormItemRegiBtn({
       disabled={isBtnDisabled || isSubmitting}
       onClick={async (btnEl) => {
         setIsSubmitting(true);
-        setValidationTxt("");
+        //setValidationTxt("");
 
         // 登録中にウェイトを入れることでボタンの表示を再レンダリング
         await regiTodoItem(todoItems);
@@ -67,11 +70,10 @@ function TodoFormItemRegiBtn({
       }}
     >
       {isSubmitting ? "登録中..." : "登録"}
-
-      {/* isSubmitting中はバリデーション非表示 */}
-      {!isSubmitting && validationTxt.length > 0 && (
-        <span>{validationTxt}</span>
-      )}
+      {typeof validationTxtRef !== "undefined" &&
+        validationTxtRef.current.length > 0 && (
+          <span>{validationTxtRef.current}</span>
+        )}
     </button>
   );
 }

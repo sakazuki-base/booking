@@ -3,9 +3,11 @@ import type { todoItemType } from "../ts/todoItemType";
 import { timeBlockBegin, timeBlockEnd } from "@/types/rooms-atom";
 import { useAtom } from "jotai";
 import { todoMemoAtom } from "@/types/calendar-atom";
+import { fetchTodoMemoAtom } from "@/types/calendar-atom";
 
 export const useCheckTimeBlockEntryForm = () => {
   const [todoMemo] = useAtom(todoMemoAtom);
+  const [fetchTodoMemo] = useAtom(fetchTodoMemoAtom);
 
   /* 予約受付可能な時間帯かチェック */
   const checkTimeBlockEntryForm: (
@@ -31,7 +33,7 @@ export const useCheckTimeBlockEntryForm = () => {
         ? parseInt(targetTime.target.value.replace(":", ""))
         : parseInt(targetTime.replace(":", ""));
 
-    const isCheckTimeSchedule: boolean = todoMemo.some((memo) => {
+    const isCheckTimeSchedule: boolean = fetchTodoMemo.some((memo) => {
       const isMatchDay: boolean = memo.todoID === todoItems.todoID;
 
       if (
@@ -47,6 +49,7 @@ export const useCheckTimeBlockEntryForm = () => {
         // 自身が登録した予約時間は検証対象外（編集時の回避措置）
         const isSelf: boolean = todoItems.id === memo.id;
         if (isSelf) {
+          console.log("自身が登録した予約時間は検証対象外");
           return false;
         }
 

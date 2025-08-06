@@ -91,7 +91,7 @@ function TodoForm({ props }: { props: TodoFormType }) {
         todoItems={todoItems}
         resetStates={resetStates}
         validationTxt={validationTxt}
-        setValidationTxt={setValidationTxt}
+        validationTxtRef={validationTxtRef}
       />
     </form>
   );

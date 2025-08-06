@@ -38,6 +38,7 @@ function TodoFormItemTimeSchedule({
     const { id, value } = e.target;
     const newTodo = { ...todoItems, [id]: value };
     checkTimeValidation(newTodo, validationTxtRef);
+    console.log(validationTxtRef);
     setTodoItems(newTodo);
   };
 
