@@ -72,10 +72,12 @@ export default function TimeSelector({
   return (
     <div>
       {/* 選択している日付を表示 */}
-      <p className="my-2 text-sm text-gray-600">{displayDate}</p>
+      <h3 className="my-2 mb-2 text-base font-bold text-gray-800">
+        {displayDate}
+      </h3>
 
       {/* 時間ボタンを表示 */}
-      <div className="flex flex-col gap-2">
+      <div className="grid grid-cols-2 gap-2 md:grid-cols-1">
         {times.map((hour) => (
           <button
             key={hour}
@@ -83,12 +85,10 @@ export default function TimeSelector({
               setSelectedTime(hour);
             }}
             disabled={isReserved(hour)}
-            className={`cursor-pointer rounded border px-5 py-1 text-left ${
-              selectedTime === hour
-                ? "bg-blue-600 text-white"
-                : isReserved(hour)
-                  ? "cursor-not-allowed bg-gray-300 text-gray-500"
-                  : "border-gray-200 bg-white text-gray-800 hover:bg-gray-200"
+            className={`rounded border px-5 py-1 text-left ${
+              isReserved(hour)
+                ? "cursor-not-allowed bg-gray-200 text-gray-400"
+                : "cursor-pointer border-gray-400 bg-white text-gray-800 hover:bg-gray-200"
             }`}
           >
             {hour.toString().padStart(2, "0")}:00～

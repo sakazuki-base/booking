@@ -59,14 +59,16 @@ function Calendar() {
 
   return (
     <section className="mx-auto mb-20 w-full max-w-screen-md">
-      <h2 className="mb-2 text-xl font-bold">
+      <h2 className="mt-4 mb-2 px-2 text-2xl font-bold">体育館予約</h2>
+
+      <h3 className="mt-4 mb-2 px-2 text-xl font-bold">
         {ctrlYear}年{ctrlMonth}月
-      </h2>
+      </h3>
 
       {/* 左右分割レイアウト用の全体コンテナ */}
-      <div className="mt-6 flex flex-row gap-8 bg-gray-50 p-4">
+      <div className="mt-6 flex flex-col gap-8 bg-gray-50 p-4 md:flex-row">
         {/* カレンダー（日付選択）エリア */}
-        <div className="w-full">
+        <div className="w-full md:w-180">
           <PrevNextMonthBtns
             className="flex justify-between"
             ctrlYear={ctrlYear}
@@ -91,7 +93,7 @@ function Calendar() {
         </div>
 
         {/* 時間選択エリア（日付に応じて表示） */}
-        <div className="w-64 border-l border-gray-300 pl-8">
+        <div className="mt-8 w-full md:mt-0 md:w-64 md:border-l md:border-gray-300 md:pl-8">
           <TimeSelector
             selectedDate={selectedDate}
             selectedTime={selectedTime}

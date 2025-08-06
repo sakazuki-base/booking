@@ -44,7 +44,12 @@ function DaysList({
                 onClick={() => handleDayClick(day)}
                 className={`flex h-full w-full items-center justify-center rounded transition ${isSelected ? "bg-gray-700 text-white" : "bg-gray-200 text-gray-800 hover:bg-gray-400"} `}
               >
-                {day.day}
+                <span className="grid h-full w-full grid-rows-2 place-items-center gap-0">
+                  <span className="self-end text-base leading-none">
+                    {day.day}
+                  </span>
+                  <span className="self-center text-xs leading-none">●</span>
+                </span>
               </button>
             )}
           </li>
