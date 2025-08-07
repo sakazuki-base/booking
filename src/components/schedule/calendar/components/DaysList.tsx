@@ -51,7 +51,7 @@ function DaysList({
         startTime: targetTime,
         finishTime: `${(hour + 1).toString().padStart(2, "0")}:00`,
       };
-      console.log(dateKey);
+
       // ひとつでも空きがあればfalse
       if (!checkTimeSchedule(targetTime, todoItems)) return false;
     }
