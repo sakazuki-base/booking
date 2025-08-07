@@ -3,16 +3,14 @@
 import { memo, useEffect, useState } from "react";
 import type { calendarItemType } from "./ts/calendarItemType";
 import { useAtom, useSetAtom } from "jotai";
-import { fetchTodoMemoAtom, isDesktopViewAtom } from "@/types/calendar-atom";
+import { fetchTodoMemoAtom } from "@/types/calendar-atom";
 import PrevNextMonthBtns from "./components/PrevNextMonthBtns";
 import DaydateList from "./components/DaydateList";
 import DaysList from "./components/DaysList";
 import { useGetMonthDays } from "./hooks/useGetMonthDays";
-import { useRemovePastSchedule } from "./hooks/useRemovePastSchedule";
 import TimeSelector from "./components/TimeSelector";
 
 function Calendar() {
-  const [, setDesktopView] = useAtom(isDesktopViewAtom);
   const setFetchTodoMemo = useSetAtom(fetchTodoMemoAtom);
 
   // 予約一覧を初期化（Hydration Mismatch 防止）
@@ -33,25 +31,6 @@ function Calendar() {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedTime, setSelectedTime] = useState<number | null>(null);
   const { getMonthDays } = useGetMonthDays();
-  const { removePastSchedule } = useRemovePastSchedule();
-
-  const handleCheckIsDesktopView = () => {
-    if (isMounted && window.matchMedia("(min-width: 1025px)").matches) {
-      setDesktopView(true);
-    }
-  };
-
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  // isMounted だけ監視でOK
-  useEffect(() => {
-    if (!isMounted) return;
-    handleCheckIsDesktopView();
-  }, [isMounted]);
 
   useEffect(() => {
     getMonthDays(ctrlYear, ctrlMonth, setDays);
