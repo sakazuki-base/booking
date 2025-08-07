@@ -6,6 +6,7 @@ import { useAtom } from "jotai";
 import { fetchTodoMemoAtom } from "@/types/calendar-atom";
 import { useState, useEffect } from "react";
 import TodoForm from "../../todoItems/TodoForm";
+import { useCheckTimeBlockEntryForm } from "../../todoItems/hooks/useCheckTimeBlockEntryForm";
 
 export default function TimeSelector({
   selectedDate,
@@ -30,6 +31,7 @@ export default function TimeSelector({
   const dateObj = new Date(year!, month! - 1, day);
   const weekday = weekdays[dateObj.getDay()];
   const displayDate = `${month}/${day}(${weekday})`;
+  const { checkTimeSchedule } = useCheckTimeBlockEntryForm();
 
   // 正規化された selectedDate を作成（YYYY/MM/DD）
   const selectedDateNormalized = `${year!.toString().padStart(4, "0")}/${month!.toString().padStart(2, "0")}/${day!.toString().padStart(2, "0")}`;
@@ -55,18 +57,21 @@ export default function TimeSelector({
   );
 
   // 予約済みチェック
+
   const isReserved = (hour: number): boolean => {
-    if (!selectedDate) return false;
-
-    const targetStart = `${hour.toString().padStart(2, "0")}:00`;
-    const targetEnd = `${(hour + 1).toString().padStart(2, "0")}:00`;
-
-    return reservations.some(
-      (r) =>
-        r.todoID === selectedDateNormalized &&
-        r.startTime === targetStart &&
-        r.finishTime === targetEnd,
-    );
+    // 時刻文字列化
+    const targetTime = `${hour.toString().padStart(2, "0")}:00`;
+    const todoItems: todoItemType = {
+      id: "",
+      todoContent: "",
+      edit: false,
+      pw: "",
+      rooms: "体育館", // TODO: 場所を可変にできるように
+      todoID: selectedDateNormalized,
+      startTime: targetTime,
+      finishTime: `${(hour + 1).toString().padStart(2, "0")}:00`,
+    };
+    return checkTimeSchedule(targetTime, todoItems);
   };
 
   return (

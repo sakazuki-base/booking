@@ -2,6 +2,11 @@
 
 import React, { memo, useMemo } from "react";
 import type { calendarItemType } from "../ts/calendarItemType";
+import { useAtom } from "jotai";
+import { fetchTodoMemoAtom } from "@/types/calendar-atom";
+import { timeBlockBegin, timeBlockEnd } from "@/types/rooms-atom";
+import type { todoItemType } from "../../todoItems/ts/todoItemType";
+import { useCheckTimeBlockEntryForm } from "../../todoItems/hooks/useCheckTimeBlockEntryForm";
 
 function DaysList({
   days, // 当月の日付リスト
@@ -12,6 +17,11 @@ function DaysList({
   selectedDate: string | null;
   setSelectedDate: React.Dispatch<React.SetStateAction<string | null>>;
 }) {
+  // jotaiから直接予約一覧を取得
+  const [reservations] = useAtom(fetchTodoMemoAtom);
+
+  const { checkTimeSchedule } = useCheckTimeBlockEntryForm();
+
   // 日付ボタン押下で日付選択状態をトグルで切り替え
   const handleDayClick = (day: calendarItemType) => {
     const key = `${day.year}/${day.month}/${day.day}`;
@@ -25,6 +35,30 @@ function DaysList({
     return new Date(now.getFullYear(), now.getMonth(), now.getDate());
   }, []);
 
+  const isAllReserved = (year: number, month: number, day: number) => {
+    const dateKey = `${year.toString().padStart(4, "0")}/${month
+      .toString()
+      .padStart(2, "0")}/${day.toString().padStart(2, "0")}`;
+    for (let hour = timeBlockBegin; hour < timeBlockEnd; hour++) {
+      const targetTime = `${hour.toString().padStart(2, "0")}:00`;
+      const todoItems: todoItemType = {
+        id: "",
+        todoContent: "",
+        edit: false,
+        pw: "",
+        rooms: "体育館",
+        todoID: dateKey,
+        startTime: targetTime,
+        finishTime: `${(hour + 1).toString().padStart(2, "0")}:00`,
+      };
+      console.log(dateKey);
+      // ひとつでも空きがあればfalse
+      if (!checkTimeSchedule(targetTime, todoItems)) return false;
+    }
+    // 全て埋まっていればtrue
+    return true;
+  };
+
   return (
     <>
       {days.map((day) => {
@@ -32,6 +66,12 @@ function DaysList({
         const isSelected = selectedDate === key;
         const thisDate = new Date(day.year, day.month - 1, day.day);
         const isPast = thisDate < todayDate;
+
+        // 全枠埋まっていれば×、どこか空いていれば●
+        let signal = "●";
+        if (isAllReserved(day.year, day.month, day.day)) {
+          signal = "×";
+        }
 
         return (
           <li key={key} className="aspect-square w-full">
@@ -48,7 +88,9 @@ function DaysList({
                   <span className="self-end text-base leading-none">
                     {day.day}
                   </span>
-                  <span className="self-center text-xs leading-none">●</span>
+                  <span className="self-center text-xs leading-none">
+                    {signal}
+                  </span>
                 </span>
               </button>
             )}
