@@ -3,22 +3,17 @@
 import type { RefObject, SyntheticEvent } from "react";
 import type { todoItemType } from "../ts/todoItemType";
 import { memo, useMemo } from "react";
-import { useRegiTodoItem } from "../hooks/useRegiTodoItem";
-import { useUpdateTodoItem } from "../hooks/useUpdateTodoItem";
 import { useHandleFormItems } from "../hooks/useHandleFormItems";
 import { useState } from "react";
-
 import { useSetAtom } from "jotai";
-import {
-  addToCartAtom,
-  clearCartAtom,
-} from "@/components/schedule/todoItems/ts/cartActions";
+import { addToCartAtom } from "@/components/schedule/todoItems/ts/cartActions";
 
 export type TodoFormItemRegiBtnProps = {
   todoItems: todoItemType;
   resetStates: () => void;
   validationTxt: string;
   validationTxtRef?: RefObject<string>;
+  onClose?: () => void;
 };
 
 function TodoFormItemRegiBtn({
@@ -26,108 +21,73 @@ function TodoFormItemRegiBtn({
   resetStates,
   validationTxt,
   validationTxtRef,
+  onClose,
 }: TodoFormItemRegiBtnProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { regiTodoItem } = useRegiTodoItem();
-  const { updateTodoItem } = useUpdateTodoItem();
   const { handleOpenClosedBtnClicked } = useHandleFormItems();
-
   const addToCart = useSetAtom(addToCartAtom);
-  const clearCart = useSetAtom(clearCartAtom);
 
+  // ボタンの活性制御
   const isBtnDisabled: boolean = useMemo(() => {
-    const isValidationTxt: boolean =
-      typeof typeof validationTxtRef !== "undefined" &&
-      validationTxtRef!.current.length > 0;
-    const inCorrectTimeSchedule: boolean =
+    const hasValidationMsg =
+      typeof validationTxtRef !== "undefined" &&
+      !!validationTxtRef.current &&
+      validationTxtRef.current.length > 0;
+
+    const inCorrectTimeSchedule =
       typeof todoItems.startTime !== "undefined" &&
       typeof todoItems.finishTime !== "undefined"
         ? parseInt(todoItems.startTime.replace(":", "")) >
           parseInt(todoItems.finishTime.replace(":", ""))
         : false;
 
-    return isValidationTxt || inCorrectTimeSchedule;
-  }, [todoItems]);
+    return hasValidationMsg || inCorrectTimeSchedule;
+  }, [todoItems, validationTxtRef]);
 
-  // 編集後に edit:true のままだと誰でも編集できてしまうので false に上書き（＝再編集を行うには再度パスワード入力が必要となる）
-  const adjustEditState_updateTodoItem: (todoItems: todoItemType) => void = (
-    todoItems: todoItemType,
-  ) => {
-    const adjustEditStateTodoItems: todoItemType = {
-      ...todoItems,
-      edit: false,
-    };
-    updateTodoItem(adjustEditStateTodoItems);
-  };
+  // カートへ追加
+  const handleAddToCart = async (btnEl: HTMLButtonElement) => {
+    setIsSubmitting(true);
 
-  // ▼ 追加：カートに追加
-  const handleAddToCart = () => {
-    const date = todoItems.todoID; // 正規化済み "YYYY/MM/DD" を想定
+    const date = todoItems.todoID; // "YYYY/MM/DD"
     const { rooms, startTime, finishTime } = todoItems;
 
     if (!date || !rooms || !startTime || !finishTime) {
-      alert("date/rooms/startTime/finishTime が不足しています。");
+      alert("date / rooms / startTime / finishTime を入力してください。");
+      setIsSubmitting(false);
       return;
     }
 
     const res = addToCart({ date, rooms, startTime, finishTime });
     if (!res?.ok) {
       alert(res?.reason ?? "カートに追加できませんでした。");
+      setIsSubmitting(false);
       return;
     }
-    alert("カートに追加しました。");
-  };
 
-  // ▼ 追加：カート全削除
-  const handleClearCart = () => {
-    if (confirm("カートを空にしますか？")) {
-      clearCart();
-      alert("カートを空にしました。");
-    }
+    // 従来と同様にフォームを閉じたり初期化したい場合は維持
+    //handleOpenClosedBtnClicked(btnEl);
+    resetStates();
+
+    setIsSubmitting(false);
+    alert("カートに追加しました。");
+    onClose?.();
   };
 
   return (
     <div className="space-y-2">
       <button
-        className={`relative w-full rounded bg-green-600 px-4 py-2 text-white hover:bg-green-700 disabled:opacity-50`}
+        className="relative w-full rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 disabled:opacity-50"
         type="button"
         disabled={isBtnDisabled || isSubmitting}
-        onClick={async (btnEl) => {
-          setIsSubmitting(true);
-          //setValidationTxt("");
-
-          // 登録中にウェイトを入れることでボタンの表示を再レンダリング
-          await regiTodoItem(todoItems);
-          await new Promise((res) => setTimeout(res, 500));
-
-          handleOpenClosedBtnClicked(btnEl.currentTarget);
-          resetStates();
-          setIsSubmitting(false);
-        }}
+        onClick={(e) => handleAddToCart(e.currentTarget)}
       >
-        {isSubmitting ? "登録中..." : "登録"}
+        {isSubmitting ? "処理中..." : "カートに追加"}
         {typeof validationTxtRef !== "undefined" &&
+          validationTxtRef.current &&
           validationTxtRef.current.length > 0 && (
-            <span>{validationTxtRef.current}</span>
+            <span className="ml-2">{validationTxtRef.current}</span>
           )}
       </button>
-      {/* ▼ 追加：カート関連ボタン */}
-      <div className="flex gap-2">
-        <button
-          type="button"
-          onClick={handleAddToCart}
-          className="flex-1 rounded border border-gray-300 px-4 py-2 text-gray-800 hover:bg-gray-100"
-        >
-          カートに追加
-        </button>
-        <button
-          type="button"
-          onClick={handleClearCart}
-          className="flex-1 rounded border border-red-300 px-4 py-2 text-red-700 hover:bg-red-50"
-        >
-          カート全削除
-        </button>
-      </div>
     </div>
   );
 }

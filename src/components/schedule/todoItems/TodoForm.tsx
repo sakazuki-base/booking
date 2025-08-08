@@ -19,7 +19,13 @@ type TodoFormType = {
   todoItem?: todoItemType;
 };
 
-function TodoForm({ props }: { props: TodoFormType }) {
+function TodoForm({
+  props,
+  onClose,
+}: {
+  props: TodoFormType;
+  onClose?: () => void;
+}) {
   const { selectedDate, selectedTime, todoItem } = props;
   const [rooms] = useAtom(roomsAtom);
   const roomRef = useRef<null | HTMLSelectElement>(null);
@@ -92,6 +98,7 @@ function TodoForm({ props }: { props: TodoFormType }) {
         resetStates={resetStates}
         validationTxt={validationTxt}
         validationTxtRef={validationTxtRef}
+        onClose={onClose}
       />
     </form>
   );

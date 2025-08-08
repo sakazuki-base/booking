@@ -134,6 +134,7 @@ export default function TimeSelector({
                 selectedDate: selectedDate,
                 selectedTime: selectedTime,
               }}
+              onClose={() => setSelectedTime(null)}
             />
           </div>
         </div>
