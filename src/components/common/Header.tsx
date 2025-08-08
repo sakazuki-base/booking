@@ -2,6 +2,7 @@ import Link from "next/link";
 import { memo } from "react";
 import Image from "next/image";
 import { auth } from "~/server/auth";
+import CartNavLink from "@/components/common/CartNavLink";
 
 export default async function Header() {
   const session = await auth(); // ログイン情報を取得
@@ -29,6 +30,9 @@ export default async function Header() {
             <Link href="/about" className="hover:text-blue-600">
               使い方
             </Link>
+          </li>
+          <li>
+            <CartNavLink />
           </li>
           {/* ログイン中はユーザー名表示 */}
           {session?.user && (
