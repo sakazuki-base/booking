@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
+import { headers } from "next/headers";
 
 // カートの1行の型（最低限）
 type CartItem = {
@@ -33,13 +34,14 @@ export async function POST(req: Request) {
       },
     }));
 
+    const origin =
+      req.headers.get("origin") ?? process.env.NEXT_PUBLIC_SITE_URL!;
+
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
-      payment_method_types: ["card"],
       line_items,
-      success_url: `${process.env.NEXT_PUBLIC_SITE_URL}/cart/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}/cart`,
-      // MVPではメタデータに一式を持たせる（件数が多い/サイズ超はpendingOrder方式へ）
+      success_url: `${origin}/cart/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${origin}/cart`,
       metadata: { payload: JSON.stringify(cart) },
     });
 
