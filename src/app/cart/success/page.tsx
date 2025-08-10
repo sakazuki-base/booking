@@ -11,7 +11,9 @@ export default function CartSuccessPage() {
 
   useEffect(() => {
     // 決済完了後にカートを空にする
-    clear();
+    if (typeof window !== "undefined") {
+      clear();
+    }
   }, [clear]);
 
   return (
