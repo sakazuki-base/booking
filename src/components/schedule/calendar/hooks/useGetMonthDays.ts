@@ -15,15 +15,19 @@ export const useGetMonthDays = () => {
     month: number,
     setDays: React.Dispatch<React.SetStateAction<calendarItemType[]>>,
   ) => {
-    /* yyyy/MM/最終日 の 日付 を取得 */
-    const daysInMonth = new Date(year, month, 0).getDate(); // new Date() の第三引数は「日にち」（日にちに0を指定すると、前月の最終日（つまり指定した年月の前月の最終日）となる）
-
+    /* 指定した年月の最終日を取得(Day=0だと最終日を返す) */
+    const daysInMonth = new Date(year, month, 0).getDate();
     const dayDateBox: calendarItemType[] = [];
+
+    // 指定月の日付情報
     for (let day = 1; day <= daysInMonth; day++) {
+      // 年月日と曜日(漢字)を取得
       const newCalendarItem = getCalendarItem(year, month, day);
+      // 当月の日付情報リストに追加
       dayDateBox.push(newCalendarItem);
     }
 
+    // 埋め草分（前月・次月）の日付情報
     const theCalendar: calendarItemType[] = prevNextDays(
       year,
       month,

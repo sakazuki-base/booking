@@ -58,7 +58,7 @@ function Calendar() {
 
           {/* 曜日ヘッダー */}
           <ul className="my-4 grid grid-cols-7 place-items-center font-medium text-gray-500">
-            <DaydateList days={days} />
+            <DaydateList />
           </ul>
 
           {/* 日付グリッド */}
@@ -67,6 +67,7 @@ function Calendar() {
               days={days}
               selectedDate={selectedDate}
               setSelectedDate={setSelectedDate}
+              viewMonth={ctrlMonth}
             />
           </ul>
         </div>
