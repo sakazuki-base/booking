@@ -17,26 +17,7 @@ export default function TimeSelector({
   selectedTime: number | null;
   setSelectedTime: (time: number | null) => void;
 }) {
-  if (!selectedDate) {
-    return (
-      <p className="my-2 text-center text-sm text-gray-600">
-        日付を選択してください
-      </p>
-    );
-  }
-
-  // 選択している日付文字列を作成
-  const weekdays = ["日", "月", "火", "水", "木", "金", "土"];
-  const [year, month, day] = selectedDate.split("/").map(Number);
-  const dateObj = new Date(year!, month! - 1, day);
-  const weekday = weekdays[dateObj.getDay()];
-  const displayDate = `${year}年${month}月${day}日(${weekday})`;
   const { checkTimeSchedule } = useCheckTimeBlockEntryForm();
-
-  // 正規化された selectedDate を作成（YYYY/MM/DD）
-  const selectedDateNormalized = `${year!.toString().padStart(4, "0")}/${month!.toString().padStart(2, "0")}/${day!.toString().padStart(2, "0")}`;
-
-  // 予約一覧を取得
   const [rawReservations] = useAtom(fetchTodoMemoAtom);
   const [reservations, setReservations] = useState<todoItemType[]>([]);
   const [ready, setReady] = useState(false);
@@ -48,13 +29,31 @@ export default function TimeSelector({
     }
   }, [rawReservations]);
 
-  if (!ready) return null;
-
-  // 時間選択リスト(8～21時)
+  // 時間選択リスト (開始は含み・終了は含まない = 例: 9〜20)
   const times = Array.from(
     { length: timeBlockEnd - timeBlockBegin },
     (_, i) => i + timeBlockBegin,
   );
+
+  // ここから表示分岐（Hook 呼び出し“後”に置く）
+  if (!ready) return null;
+  if (!selectedDate) {
+    return (
+      <p className="my-2 text-center text-sm text-gray-600">
+        日付を選択してください
+      </p>
+    );
+  }
+
+  // 選択している日付文字列の組み立て（ここは Hook ではないので条件分岐後でOK）
+  const weekdays = ["日", "月", "火", "水", "木", "金", "土"];
+  const [year, month, day] = selectedDate.split("/").map(Number);
+  const dateObj = new Date(year!, month! - 1, day);
+  const weekday = weekdays[dateObj.getDay()];
+  const displayDate = `${year}年${month}月${day}日(${weekday})`;
+
+  // 正規化された selectedDate を作成（YYYY/MM/DD）
+  const selectedDateNormalized = `${year!.toString().padStart(4, "0")}/${month!.toString().padStart(2, "0")}/${day!.toString().padStart(2, "0")}`;
 
   // 予約済みチェック
 
@@ -83,24 +82,24 @@ export default function TimeSelector({
 
       {/* 時間ボタンを表示 */}
       <div className="grid grid-cols-2 gap-2 md:grid-cols-1">
-        {times.map((hour) => (
-          <button
-            key={hour}
-            onClick={() => {
-              setSelectedTime(hour);
-            }}
-            disabled={isReserved(hour)}
-            className={`rounded border px-5 py-1 text-left ${
-              isReserved(hour)
-                ? "cursor-not-allowed bg-gray-200 text-gray-400"
-                : "cursor-pointer border-gray-400 bg-white text-gray-800 hover:bg-gray-200"
-            }`}
-          >
-            {hour.toString().padStart(2, "0")}:00～
-            {(hour + 1).toString().padStart(2, "0")}:00{" "}
-            {isReserved(hour) ? "×" : "●"}
-          </button>
-        ))}
+        {times.map((hour) => {
+          const reserved = isReserved(hour);
+          return (
+            <button
+              key={hour}
+              onClick={() => setSelectedTime(hour)}
+              disabled={reserved}
+              className={`rounded border px-5 py-1 text-left ${
+                reserved
+                  ? "cursor-not-allowed bg-gray-200 text-gray-400"
+                  : "cursor-pointer border-gray-400 bg-white text-gray-800 hover:bg-gray-200"
+              }`}
+            >
+              {hour.toString().padStart(2, "0")}:00～
+              {(hour + 1).toString().padStart(2, "0")}:00 {reserved ? "×" : "●"}
+            </button>
+          );
+        })}
       </div>
 
       {/* 予約登録フォーム */}
