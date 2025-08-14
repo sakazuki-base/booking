@@ -107,3 +107,11 @@ model StripeEventLog {
 
   @@index([type, created])
 }
+
+model PendingCart {
+  id        String   @id @default(cuid())
+  items     Json
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}

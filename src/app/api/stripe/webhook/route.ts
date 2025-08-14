@@ -94,20 +94,36 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ received: true });
       }
 
-      // ---- metadata からカート復元（将来は cartId 方式推奨）----
+      // ---- カート復元（cartId 優先 / 互換: payload）----
       let items: CartItem[] = [];
+      let cartIdForCleanup: string | undefined;
       try {
-        const s = session.metadata?.payload ?? "[]";
-        if (s.length > 500) throw new Error("metadata.payload too long");
-        items = JSON.parse(s);
-        if (!Array.isArray(items)) throw new Error("payload is not array");
+        const cartId = session.metadata?.cartId ?? "";
+        if (cartId) {
+          const cart = await prisma.pendingCart.findUnique({
+            where: { id: cartId },
+            select: { items: true },
+          });
+          if (!cart) throw new Error("PendingCart not found");
+          const arr = cart.items as unknown;
+          if (!Array.isArray(arr)) throw new Error("items is not array");
+          items = arr as CartItem[];
+          cartIdForCleanup = cartId;
+        } else {
+          // 互換: 旧payload方式（500文字制限に注意）
+          const s = session.metadata?.payload ?? "[]";
+          if (s.length > 500) throw new Error("metadata.payload too long");
+          const arr = JSON.parse(s);
+          if (!Array.isArray(arr)) throw new Error("payload is not array");
+          items = arr as CartItem[];
+        }
       } catch (e: any) {
         await prisma.stripeEventLog.update({
           where: { id: event.id },
           data: {
             status: "ERROR",
             processedAt: new Date(),
-            error: `payload parse: ${e?.message}`,
+            error: `cart restore: ${e?.message}`,
           },
         });
         return NextResponse.json({ received: true }); // 再送しても直らないので200
@@ -132,6 +148,14 @@ export async function POST(req: NextRequest) {
             });
           }
         });
+        // （任意）後片付け：取り込みに成功したら PendingCart を削除
+        try {
+          if (cartIdForCleanup) {
+            await prisma.pendingCart.delete({
+              where: { id: cartIdForCleanup },
+            });
+          }
+        } catch {}
 
         await prisma.stripeEventLog.update({
           where: { id: event.id },
@@ -157,6 +181,16 @@ export async function POST(req: NextRequest) {
           });
           return new NextResponse("Slot already taken", { status: 409 });
         }
+
+        // （任意）取り込み成功後に PendingCart を削除（テーブル肥大防止）
+        try {
+          const cartId = session.metadata?.cartId;
+          if (cartId) {
+            await prisma.pendingCart.delete({
+              where: { id: cartId },
+            });
+          }
+        } catch {}
 
         await prisma.stripeEventLog.update({
           where: { id: event.id },

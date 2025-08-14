@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
-import { headers } from "next/headers";
+import { prisma } from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
 
 // カートの1行の型（最低限）
 type CartItem = {
@@ -37,12 +38,21 @@ export async function POST(req: Request) {
     const origin =
       req.headers.get("origin") ?? process.env.NEXT_PUBLIC_SITE_URL!;
 
+    // 1) カートをDBに一時保存（metadataに大きなJSONを入れない）
+    const pending = await prisma.pendingCart.create({
+      data: { items: cart as unknown as Prisma.InputJsonValue },
+      select: { id: true },
+    });
+
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       line_items,
       success_url: `${origin}/cart/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/cart`,
-      metadata: { payload: JSON.stringify(cart) },
+      // 2) metadata は cartId のみ（500文字制限を回避）
+      metadata: { cartId: pending.id },
+      // 3) 将来 payment_intent.succeeded を使う場合にも拾えるように同じ cartId を付与
+      payment_intent_data: { metadata: { cartId: pending.id } },
     });
 
     return NextResponse.json({ url: session.url });
