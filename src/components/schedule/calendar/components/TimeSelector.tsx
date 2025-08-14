@@ -30,7 +30,7 @@ export default function TimeSelector({
   const [year, month, day] = selectedDate.split("/").map(Number);
   const dateObj = new Date(year!, month! - 1, day);
   const weekday = weekdays[dateObj.getDay()];
-  const displayDate = `${month}/${day}(${weekday})`;
+  const displayDate = `${year}年${month}月${day}日(${weekday})`;
   const { checkTimeSchedule } = useCheckTimeBlockEntryForm();
 
   // 正規化された selectedDate を作成（YYYY/MM/DD）
