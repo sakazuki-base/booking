@@ -26,11 +26,7 @@ export default async function Header() {
               TOP
             </Link>
           </li>
-          <li>
-            <Link href="/about" className="hover:text-blue-600">
-              使い方
-            </Link>
-          </li>
+
           <li>
             <CartNavLink />
           </li>
@@ -47,6 +43,14 @@ export default async function Header() {
               className="rounded bg-blue-100 px-4 py-1 text-blue-800 transition hover:bg-blue-200"
             >
               {session ? "ログアウト" : "ログイン"}
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/admin/reservations"
+              className="rounded bg-red-600 px-4 py-1 text-white transition hover:bg-red-200"
+            >
+              管理画面
             </Link>
           </li>
         </ul>
