@@ -13,7 +13,7 @@ type CartItem = {
 };
 
 // 料金ロジック（例：1枠=1000円）
-const calcAmount = (_: CartItem) => 1000;
+const calcAmount = (_: CartItem) => 1500;
 
 export async function POST(req: Request) {
   try {

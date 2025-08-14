@@ -76,4 +76,34 @@ model Reservation {
   finishTime  String                        // 終了時間 (hh:mm)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  stripeSessionId String?                   // Checkout Session ID (監査用)
+
+  // 同時間・同部屋の二重予約をDBレベルでブロック
+  @@unique([rooms, todoID, startTime, finishTime])
+}
+
+enum StripeEventStatus {
+  RECEIVED   // 受領（まだ処理前）
+  PROCESSED  // 正常処理完了
+  SKIPPED    // 冪等性等でスキップ（再送/対象外/未入金など）
+  ERROR      // 処理中に例外
+}
+
+model StripeEventLog {
+  // Stripe の event.id をそのまま主キーにして idempotency を担保
+  id           String            @id
+  type         String
+  apiVersion   String?
+  account      String?
+  created      DateTime          // Stripeの秒タイムスタンプをDate化
+  payload      Json              // イベントの生ペイロード（完全保存）
+  signature    String?           // 署名ヘッダ（監査用）
+  receivedAt   DateTime          @default(now())
+  processedAt  DateTime?
+  status       StripeEventStatus @default(RECEIVED)
+  error        String?
+  retryCount   Int               @default(0)
+
+  @@index([type, created])
 }
