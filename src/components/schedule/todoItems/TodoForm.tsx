@@ -64,7 +64,7 @@ function TodoForm({
 
   return (
     <form
-      className="relative text-[1.4rem] leading-[1.8]"
+      className="relative text-lg leading-8"
       onSubmit={(formElm: ChangeEvent<HTMLFormElement>) => {
         formElm.preventDefault();
         if (!todoItems.edit) {
@@ -93,13 +93,15 @@ function TodoForm({
       />
 
       {/* 登録ボタン */}
-      <TodoFormItemRegiBtn
-        todoItems={todoItems}
-        resetStates={resetStates}
-        validationTxt={validationTxt}
-        validationTxtRef={validationTxtRef}
-        onClose={onClose}
-      />
+      <div className="mt-4">
+        <TodoFormItemRegiBtn
+          todoItems={todoItems}
+          resetStates={resetStates}
+          validationTxt={validationTxt}
+          validationTxtRef={validationTxtRef}
+          onClose={onClose}
+        />
+      </div>
     </form>
   );
 }

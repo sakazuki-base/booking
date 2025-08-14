@@ -72,7 +72,7 @@ function PrevNextMonthBtns({
       </button>
 
       <button
-        className="rounded bg-green-700 px-4 py-1 text-white"
+        className="rounded bg-gray-700 px-4 py-1 text-white"
         type="button"
         onClick={jumpThisMonth}
       >
