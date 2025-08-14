@@ -49,6 +49,7 @@ export async function POST(req: Request) {
       line_items,
       success_url: `${origin}/cart/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/cart`,
+      customer_creation: "always",
       // 2) metadata は cartId のみ（500文字制限を回避）
       metadata: { cartId: pending.id },
       // 3) 将来 payment_intent.succeeded を使う場合にも拾えるように同じ cartId を付与

@@ -74,6 +74,8 @@ model Reservation {
   rooms       String                        // 予約会議室名
   startTime   String                        // 開始時間 (hh:mm)
   finishTime  String                        // 終了時間 (hh:mm)
+  email       String?                       // 予約者メール（Stripe由来）
+  unlockCode  String?                       // 解錠パスコード（本番はハッシュ推奨）
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -81,6 +83,7 @@ model Reservation {
 
   // 同時間・同部屋の二重予約をDBレベルでブロック
   @@unique([rooms, todoID, startTime, finishTime])
+  @@index([email])
 }
 
 enum StripeEventStatus {

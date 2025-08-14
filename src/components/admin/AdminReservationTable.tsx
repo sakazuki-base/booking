@@ -51,11 +51,15 @@ export default function AdminReservationTable({
     location.reload();
   };
 
-  const handleSendEmail = async (id: string) => {
-    const to = prompt(
-      "送信先メールアドレスを入力してください（例: user@example.com）",
-    );
-    if (!to) return;
+  const handleSendEmail = async (id: string, presetEmail?: string | null) => {
+    let to = (presetEmail ?? "").trim();
+    if (!to) {
+      const input = prompt(
+        "送信先メールアドレスを入力してください（例: user@example.com）",
+      );
+      if (!input) return;
+      to = input.trim();
+    }
     const ok = confirm(
       `${to} に鍵パスワードメールを送信します。よろしいですか？`,
     );
@@ -112,8 +116,10 @@ export default function AdminReservationTable({
             <th className="p-2 whitespace-nowrap">作成日時</th>
             <th className="p-2 whitespace-nowrap">部屋</th>
             <th className="p-2 whitespace-nowrap">氏名</th>
+            <th className="p-2 whitespace-nowrap">メール</th>
             <th className="p-2 whitespace-nowrap">開始</th>
             <th className="p-2 whitespace-nowrap">終了</th>
+            <th className="p-2 whitespace-nowrap">解錠パス</th>
             <th className="p-2 whitespace-nowrap">操作</th>
           </tr>
         </thead>
@@ -133,10 +139,16 @@ export default function AdminReservationTable({
               <td className="p-2 text-center whitespace-nowrap">{r.rooms}</td>
               <td className="p-2 text-center whitespace-nowrap">{r.person}</td>
               <td className="p-2 text-center whitespace-nowrap">
+                {r.email ?? ""}
+              </td>
+              <td className="p-2 text-center whitespace-nowrap">
                 {r.startTime}
               </td>
               <td className="p-2 text-center whitespace-nowrap">
                 {r.finishTime}
+              </td>
+              <td className="p-2 text-center whitespace-nowrap">
+                {r.unlockCode ?? ""}
               </td>
               <td className="p-2 text-center whitespace-nowrap">
                 <button
@@ -156,7 +168,7 @@ export default function AdminReservationTable({
                   削除
                 </button>
                 <button
-                  onClick={() => handleSendEmail(r.id)}
+                  onClick={() => handleSendEmail(r.id, r.email)}
                   className="rounded border px-2 py-1 text-blue-600"
                 >
                   メール
@@ -176,8 +188,10 @@ function toCSV(rows: any[]): string {
     "createdAt",
     "rooms",
     "person",
+    "email",
     "startTime",
     "finishTime",
+    "unlockCode",
     "todoContent",
   ];
   const esc = (v: any) => {
@@ -193,8 +207,10 @@ function toCSV(rows: any[]): string {
         r.createdAt?.toISOString?.() ?? r.createdAt,
         r.rooms,
         r.person,
+        r.email ?? "",
         r.startTime,
         r.finishTime,
+        r.unlockCode ?? "",
         r.todoContent,
       ]
         .map(esc)
