@@ -89,6 +89,19 @@ export default function AdminReservationTable({
     }
   }
 
+  async function handleSetSwitchBot(id: string) {
+    const res = await fetch(`/api/admin/reservations/${id}/set-switchbot`, {
+      method: "POST",
+    });
+    const data = await res.json();
+
+    if (res.ok) {
+      alert("SwitchBotにパスコードを設定しました");
+    } else {
+      alert("エラー: " + (data.error ?? JSON.stringify(data)));
+    }
+  }
+
   return (
     <section className="overflow-x-auto rounded-2xl bg-white shadow">
       <div className="flex items-center justify-between gap-2 p-3">
@@ -192,6 +205,13 @@ export default function AdminReservationTable({
                   className="rounded bg-blue-500 px-3 py-1 text-white hover:bg-blue-600"
                 >
                   生成
+                </button>
+                <button
+                  className="ml-2 rounded bg-green-500 px-2 py-1 text-white"
+                  onClick={() => handleSetSwitchBot(r.id)}
+                  disabled={!r.unlockCode} // パスコード未生成なら無効化
+                >
+                  SwitchBot設定
                 </button>
                 <button
                   onClick={() => handleSendEmail(r.id, r.email)}
