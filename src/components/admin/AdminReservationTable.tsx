@@ -1,7 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import type { Reservation } from "@prisma/client";
+import { useMemo, useState, useEffect } from "react";
+import type { AdminReservationRow } from "@/types/admin";
 
 export default function AdminReservationTable({
   data,
@@ -9,7 +9,7 @@ export default function AdminReservationTable({
   pageSize,
   total,
 }: {
-  data: Reservation[];
+  data: AdminReservationRow[];
   page: number;
   pageSize: number;
   total: number;
@@ -28,6 +28,11 @@ export default function AdminReservationTable({
   };
 
   const csvText = useMemo(() => toCSV(data), [data]);
+
+  const [csvHref, setCsvHref] = useState("");
+  useEffect(() => {
+    setCsvHref(`data:text/csv;charset=utf-8,${encodeURIComponent(csvText)}`);
+  }, [csvText, page]);
 
   const handleCopyCSV = async () => {
     await navigator.clipboard.writeText(csvText);
@@ -110,9 +115,10 @@ export default function AdminReservationTable({
         </p>
         <div className="flex gap-2">
           <a
-            href={`data:text/csv;charset=utf-8,${encodeURIComponent(csvText)}`}
+            href={csvHref || undefined}
             download={`reservations_page${page}.csv`}
             className="rounded border px-3 py-1"
+            suppressHydrationWarning
           >
             CSVダウンロード
           </a>
@@ -160,7 +166,7 @@ export default function AdminReservationTable({
                 />
               </td>
               <td className="p-2 text-center whitespace-nowrap">
-                {formatDateTime(r.createdAt)}
+                <DateCell iso={r.createdAt} />
               </td>
               <td className="p-2 text-center whitespace-nowrap">{r.rooms}</td>
               <td className="p-2 text-center whitespace-nowrap">{r.person}</td>
@@ -266,12 +272,29 @@ function toCSV(rows: any[]): string {
   return [head, body].join("\n");
 }
 
-function formatDateTime(d: Date | string): string {
-  const date = typeof d === "string" ? new Date(d) : d;
-  const yyyy = date.getFullYear();
-  const mm = String(date.getMonth() + 1).padStart(2, "0");
-  const dd = String(date.getDate()).padStart(2, "0");
-  const hh = String(date.getHours()).padStart(2, "0");
-  const mi = String(date.getMinutes()).padStart(2, "0");
-  return `${yyyy}-${mm}-${dd} ${hh}:${mi}`;
+function formatDateTime(isoLike: string): string {
+  const date = new Date(isoLike);
+  if (Number.isNaN(date.getTime())) return "";
+  const fmt = new Intl.DateTimeFormat("ja-JP", {
+    timeZone: "Asia/Tokyo",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+  const parts = fmt.formatToParts(date);
+  const get = (t: string) => parts.find((p) => p.type === t)?.value ?? "";
+  return `${get("year")}-${get("month")}-${get("day")} ${get("hour")}:${get("minute")}`;
+}
+
+function DateCell({ iso }: { iso: string }) {
+  const [text, setText] = useState("");
+
+  useEffect(() => {
+    setText(formatDateTime(iso));
+  }, [iso]);
+
+  return <span suppressHydrationWarning>{text}</span>;
 }

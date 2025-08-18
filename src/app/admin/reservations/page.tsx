@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import AdminReservationTable from "@/components/admin/AdminReservationTable";
+import type { Reservation } from "@prisma/client";
+import type { AdminReservationRow } from "@/types/admin";
 
 export const dynamic = "force-dynamic"; // 最新を取りに行く
 
@@ -51,7 +53,7 @@ export default async function Page({
     if (to) where.createdAt.lte = new Date(`${to}T23:59:59.999Z`);
   }
 
-  const [total, reservations] = await Promise.all([
+  const [total, reservationsRaw] = await Promise.all([
     prisma.reservation.count({ where }),
     prisma.reservation.findMany({
       where,
@@ -60,6 +62,12 @@ export default async function Page({
       take: PAGE_SIZE,
     }),
   ]);
+
+  const reservations: AdminReservationRow[] = reservationsRaw.map((r) => ({
+    ...r,
+    createdAt: r.createdAt.toISOString(),
+    updatedAt: r.updatedAt.toISOString(),
+  }));
 
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
 
