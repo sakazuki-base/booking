@@ -7,10 +7,11 @@ import { prisma as _prisma } from "@/lib/prisma";
 
 export async function DELETE(
   _: Request,
-  { params }: { params: { id: string } },
+  ctx: { params: Promise<{ id: string }> },
 ) {
   try {
-    await _prisma.reservation.delete({ where: { id: params.id } });
+    const { id } = await ctx.params; // await が必要
+    await _prisma.reservation.delete({ where: { id } });
     return NextResponse.json({ ok: true });
   } catch (e: any) {
     return new NextResponse(e?.message ?? "delete failed", { status: 500 });
