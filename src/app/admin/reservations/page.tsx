@@ -87,14 +87,11 @@ export default async function Page({
   return (
     <main className="mx-auto max-w-screen-xl space-y-6 p-4">
       <header className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">予約一覧（管理）</h1>
-        <Link href="/" className="text-sm underline">
-          サイトへ戻る
-        </Link>
+        <h1 className="text-2xl font-semibold">予約一覧</h1>
       </header>
 
       {/* フィルタフォーム（クエリストリング連動） */}
-      <form className="grid gap-3 rounded-2xl bg-white p-4 shadow md:grid-cols-6">
+      <form className="grid gap-3 rounded-md bg-white p-4 py-1 shadow md:grid-cols-6">
         <input
           name="q"
           defaultValue={q}
@@ -105,31 +102,36 @@ export default async function Page({
           name="person"
           defaultValue={person}
           placeholder="氏名（部分一致）"
-          className="rounded border px-3 py-2"
+          className="rounded border px-3 py-1"
         />
         <input
           name="room"
           defaultValue={room}
           placeholder="部屋（完全一致）"
-          className="rounded border px-3 py-2"
+          className="rounded border px-3 py-1"
         />
         <div className="flex gap-2 md:col-span-2">
           <input
             type="date"
             name="from"
             defaultValue={from}
-            className="w-full rounded border px-3 py-2"
+            className="w-full rounded border px-3 py-1"
           />
           <input
             type="date"
             name="to"
             defaultValue={to}
-            className="w-full rounded border px-3 py-2"
+            className="w-full rounded border px-3 py-1"
           />
         </div>
         <div className="flex gap-2 md:col-span-6">
-          <button className="rounded border px-4 py-2">検索</button>
-          <Link href="/admin/reservations" className="rounded border px-4 py-2">
+          <button className="rounded bg-gray-700 px-4 py-1 text-white">
+            検索
+          </button>
+          <Link
+            href="/admin/reservations"
+            className="rounded bg-gray-700 px-4 py-1 text-white"
+          >
             クリア
           </Link>
         </div>

@@ -108,7 +108,7 @@ export default function AdminReservationTable({
   }
 
   return (
-    <section className="overflow-x-auto rounded-2xl bg-white shadow">
+    <section className="overflow-x-auto rounded-md bg-white shadow">
       <div className="flex items-center justify-between gap-2 p-3">
         <p className="text-sm text-gray-600">
           全{total}件 / ページ {page}（{pageSize}件表示）
@@ -117,17 +117,20 @@ export default function AdminReservationTable({
           <a
             href={csvHref || undefined}
             download={`reservations_page${page}.csv`}
-            className="rounded border px-3 py-1"
+            className="rounded bg-gray-700 px-4 py-1 text-white"
             suppressHydrationWarning
           >
             CSVダウンロード
           </a>
-          <button onClick={handleCopyCSV} className="rounded border px-3 py-1">
+          <button
+            onClick={handleCopyCSV}
+            className="rounded bg-gray-700 px-4 py-1 text-white"
+          >
             CSVをコピー
           </button>
           <button
             onClick={handleDelete}
-            className="rounded border px-3 py-1 text-red-600"
+            className="rounded bg-red-500 px-3 py-1 text-white hover:bg-red-600"
           >
             選択を削除
           </button>
@@ -144,14 +147,14 @@ export default function AdminReservationTable({
                 onChange={toggleAll}
               />
             </th>
-            <th className="p-2 whitespace-nowrap">作成日時</th>
-            <th className="p-2 whitespace-nowrap">部屋</th>
-            <th className="p-2 whitespace-nowrap">氏名</th>
-            <th className="p-2 whitespace-nowrap">メール</th>
+            <th className="p-2 whitespace-nowrap">種類</th>
+            <th className="p-2 whitespace-nowrap">日付</th>
             <th className="p-2 whitespace-nowrap">開始</th>
             <th className="p-2 whitespace-nowrap">終了</th>
+            <th className="p-2 whitespace-nowrap">氏名</th>
+            <th className="p-2 whitespace-nowrap">メール</th>
+
             <th className="p-2 whitespace-nowrap">解錠パス</th>
-            <th className="p-2 whitespace-nowrap">状態</th>
             <th className="p-2 whitespace-nowrap">操作</th>
           </tr>
         </thead>
@@ -165,31 +168,46 @@ export default function AdminReservationTable({
                   onChange={() => toggle(r.id)}
                 />
               </td>
-              <td className="p-2 text-center whitespace-nowrap">
-                <DateCell iso={r.createdAt} />
-              </td>
               <td className="p-2 text-center whitespace-nowrap">{r.rooms}</td>
-              <td className="p-2 text-center whitespace-nowrap">{r.person}</td>
-              <td className="p-2 text-center whitespace-nowrap">
-                {r.email ?? ""}
-              </td>
+              <td className="p-2 text-center whitespace-nowrap">{r.todoID}</td>
               <td className="p-2 text-center whitespace-nowrap">
                 {r.startTime}
               </td>
               <td className="p-2 text-center whitespace-nowrap">
                 {r.finishTime}
               </td>
+              <td className="p-2 text-center whitespace-nowrap">{r.person}</td>
+              <td className="p-2 text-center whitespace-nowrap">
+                {r.email ?? ""}
+              </td>
+
               <td className="p-2 text-center whitespace-nowrap">
                 {r.unlockCode ?? ""}
               </td>
-              <td>
-                {r.paid
-                  ? r.passSent
-                    ? "パスコード送信済み"
-                    : "パスコード未送信"
-                  : "決済済みでない"}
-              </td>
+
               <td className="p-2 text-center whitespace-nowrap">
+                <button
+                  onClick={() => handleGenerateCode(r.id)}
+                  className="rounded bg-blue-500 px-3 py-1 text-white hover:bg-blue-600"
+                >
+                  パス生成
+                </button>
+
+                <button
+                  className="ml-2 rounded bg-blue-500 px-3 py-1 text-white hover:bg-blue-600"
+                  onClick={() => handleSetSwitchBot(r.id)}
+                  disabled={!r.unlockCode} // パスコード未生成なら無効化
+                >
+                  SwitchBot設定
+                </button>
+
+                <button
+                  onClick={() => handleSendEmail(r.id, r.email)}
+                  className="ml-2 rounded bg-blue-500 px-3 py-1 text-white hover:bg-blue-600"
+                >
+                  メール送信
+                </button>
+
                 <button
                   onClick={async () => {
                     if (!confirm("この予約を削除しますか？")) return;
@@ -202,28 +220,9 @@ export default function AdminReservationTable({
                       location.reload();
                     }
                   }}
-                  className="rounded border px-2 py-1 text-red-600"
+                  className="ml-2 rounded bg-red-500 px-3 py-1 text-white hover:bg-red-600"
                 >
                   削除
-                </button>
-                <button
-                  onClick={() => handleGenerateCode(r.id)}
-                  className="rounded bg-blue-500 px-3 py-1 text-white hover:bg-blue-600"
-                >
-                  生成
-                </button>
-                <button
-                  className="ml-2 rounded bg-green-500 px-2 py-1 text-white"
-                  onClick={() => handleSetSwitchBot(r.id)}
-                  disabled={!r.unlockCode} // パスコード未生成なら無効化
-                >
-                  SwitchBot設定
-                </button>
-                <button
-                  onClick={() => handleSendEmail(r.id, r.email)}
-                  className="rounded border px-2 py-1 text-blue-600"
-                >
-                  メール
                 </button>
               </td>
             </tr>

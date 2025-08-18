@@ -13,7 +13,7 @@ export default async function Header() {
         {/* 左側：ロゴ */}
         <Link href="/" className="hover:text-blue-600">
           <Image
-            src="/icons/logo.png"
+            src="/icons/logo.jpg"
             alt="SakaZuki Base"
             width={40}
             height={40}
@@ -23,7 +23,7 @@ export default async function Header() {
         <ul className="flex space-x-6 text-sm font-medium">
           <li>
             <Link href="/" className="hover:text-blue-600">
-              TOP
+              体育館予約
             </Link>
           </li>
 
