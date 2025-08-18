@@ -75,9 +75,13 @@ model Reservation {
   startTime   String                        // 開始時間 (hh:mm)
   finishTime  String                        // 終了時間 (hh:mm)
   email       String?                       // 予約者メール（Stripe由来）
-  unlockCode  String?                       // 解錠パスコード（本番はハッシュ推奨）
+  unlockCode  String?                       // 解錠パスコード
+  codeStartTime DateTime?                   // パスコード有効期限開始
+  codeFinishTime DateTime?                  // パスコード有効期限終了 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  passSent    Boolean  @default(false)      // パスコード送信済み
+  paid        Boolean  @default(false)      // 決済済み
 
   stripeSessionId String?                   // Checkout Session ID (監査用)
 

@@ -77,6 +77,18 @@ export default function AdminReservationTable({
     alert("送信しました");
   };
 
+  async function handleGenerateCode(id: string) {
+    const res = await fetch(`/api/admin/reservations/${id}/generate-code`, {
+      method: "POST",
+    });
+    if (res.ok) {
+      alert("パスコードを生成しました");
+      location.reload(); // 状態更新のためリロード
+    } else {
+      alert("生成に失敗しました");
+    }
+  }
+
   return (
     <section className="overflow-x-auto rounded-2xl bg-white shadow">
       <div className="flex items-center justify-between gap-2 p-3">
@@ -120,6 +132,7 @@ export default function AdminReservationTable({
             <th className="p-2 whitespace-nowrap">開始</th>
             <th className="p-2 whitespace-nowrap">終了</th>
             <th className="p-2 whitespace-nowrap">解錠パス</th>
+            <th className="p-2 whitespace-nowrap">状態</th>
             <th className="p-2 whitespace-nowrap">操作</th>
           </tr>
         </thead>
@@ -150,6 +163,13 @@ export default function AdminReservationTable({
               <td className="p-2 text-center whitespace-nowrap">
                 {r.unlockCode ?? ""}
               </td>
+              <td>
+                {r.paid
+                  ? r.passSent
+                    ? "パスコード送信済み"
+                    : "パスコード未送信"
+                  : "決済済みでない"}
+              </td>
               <td className="p-2 text-center whitespace-nowrap">
                 <button
                   onClick={async () => {
@@ -166,6 +186,12 @@ export default function AdminReservationTable({
                   className="rounded border px-2 py-1 text-red-600"
                 >
                   削除
+                </button>
+                <button
+                  onClick={() => handleGenerateCode(r.id)}
+                  className="rounded bg-blue-500 px-3 py-1 text-white hover:bg-blue-600"
+                >
+                  生成
                 </button>
                 <button
                   onClick={() => handleSendEmail(r.id, r.email)}

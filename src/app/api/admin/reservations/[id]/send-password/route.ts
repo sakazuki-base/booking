@@ -51,10 +51,12 @@ export async function POST(
     const text = buildPasswordMail({
       person: r.person ?? "ご担当者",
       room: r.rooms ?? "",
+      date: r.todoID,
       startTime: String(r.startTime ?? ""),
       finishTime: String(r.finishTime ?? ""),
-      password: String(r.pw ?? ""),
-      notes: r.todoContent ?? "",
+      password: String(r.unlockCode ?? ""),
+      codeStartTime: r.codeStartTime,
+      codeFinishTime: r.codeFinishTime,
     });
 
     // localhost を避けるため自ドメインで Message-ID を生成
@@ -131,26 +133,36 @@ function buildMessageId(domain: string): string {
 function buildPasswordMail(args: {
   person: string;
   room: string;
+  date: string;
   startTime: string;
   finishTime: string;
   password: string;
-  notes?: string;
+  codeStartTime?: Date | null;
+  codeFinishTime?: Date | null;
 }) {
-  const { person, room, startTime, finishTime, password, notes } = args;
+  const {
+    person,
+    room,
+    date,
+    startTime,
+    finishTime,
+    password,
+    codeStartTime,
+    codeFinishTime,
+  } = args;
+
+  const fmt = (d?: Date | null) =>
+    d
+      ? d.toLocaleString("ja-JP", { dateStyle: "short", timeStyle: "short" })
+      : "未設定";
+
   return `${person} 様
 
 ご予約内容をお知らせします。
 
-ご予約の日時：${startTime} 〜 ${finishTime}
+ご予約の日時：${date} ${startTime} 〜 ${finishTime}
 ご予約の種類：${room}
 キーパッドの解錠パスワードは「${password}」
-有効期限は、○○～○○までです。
-${
-  notes
-    ? `【備考】
-${notes}
-
-`
-    : ""
-}本メールにお心当たりがない場合は破棄してください。`;
+有効期限は、${fmt(codeStartTime)} 〜 ${fmt(codeFinishTime)} です。
+`;
 }
