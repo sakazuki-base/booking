@@ -13,8 +13,18 @@ type CartItem = {
   note?: string;
 };
 
-// 料金ロジック（例：1枠=1000円）
-const calcAmount = (_: CartItem) => 1500;
+// 料金ロジック
+const calcAmount = (item: CartItem) => {
+  const startH = parseInt(item.startTime.split(":")[0] ?? "");
+  const endH = parseInt(item.finishTime.split(":")[0] ?? "");
+
+  if (isNaN(startH) || isNaN(endH)) {
+    throw new Error("不正な時刻形式");
+  }
+
+  const diffHours = endH - startH;
+  return diffHours * 1500;
+};
 
 export async function POST(req: Request) {
   try {
